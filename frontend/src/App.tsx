@@ -1,38 +1,33 @@
 import * as React from "react"
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from "@chakra-ui/react"
-import { ColorModeSwitcher } from "./ColorModeSwitcher"
-import { Logo } from "./Logo"
+import {ChakraProvider, Box, Button, Flex } from "@chakra-ui/react";
+import axios from "axios";
+import { useState } from "react";
+import { Input } from '@chakra-ui/react'
 
-export const App = () => (
-  <ChakraProvider theme={theme}>
-    <Box textAlign="center" fontSize="xl">
-      <Grid minH="100vh" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
-        <VStack spacing={8}>
-          <Logo h="40vmin" pointerEvents="none" />
-          <Text>
-            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
-          </Text>
-          <Link
-            color="teal.500"
-            href="https://chakra-ui.com"
-            fontSize="2xl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn Chakra
-          </Link>
-        </VStack>
-      </Grid>
+
+function App () {
+  const [name, setName] = useState("test name 6");
+
+  const onChange = (event: any) => {
+    setName(event.target.value);
+  }
+  const handleClick = async () => {
+    const response = await axios.post("http://localhost:4000/name", {name});
+    console.log('RESPONSE', response.data)
+ 
+    }  
+    
+    return (
+    <ChakraProvider> 
+  <Flex >
+    <Box m={10} display="flex" gap={4}>
+      <Input placeholder="Input name" onChange={onChange}/>
+    <Button colorScheme="purple" onClick={handleClick}>Add Name</Button>
     </Box>
+    
+  </Flex>
   </ChakraProvider>
 )
+}
+
+export default App;
