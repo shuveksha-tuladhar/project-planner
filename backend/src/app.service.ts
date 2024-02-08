@@ -11,12 +11,13 @@ constructor(
     private namesRepository: Repository<Name>,
   ) {}
   
-  async addNames(name: string) {
+  async addName(firstName: string, lastName: string) {
     // save the name into the name table of the database
-    const addName = await this.namesRepository.save({name});
-    console.log('add names:', addName)
+    await this.namesRepository.save({first_name: firstName, last_name: lastName});
+    
     return await this.getNames();
   }
+
   async getNames() {
     //get all names from database
     const names = await this.namesRepository.find();
