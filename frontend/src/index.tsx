@@ -1,17 +1,29 @@
-import { ColorModeScript } from "@chakra-ui/react"
-import * as React from "react"
-import * as ReactDOM from "react-dom/client"
-import  App  from "./App"
+import { ColorModeScript } from "@chakra-ui/react";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
+import SignUp from "./Pages/SignUp";
+import LogIn from "./Pages/LogIn";
 
-const container = document.getElementById("root")
-if (!container) throw new Error('Failed to find the root element');
-const root = ReactDOM.createRoot(container)
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      {
+        path: "/sign-up",
+        element: <SignUp />,
+      },
+      {
+        path: "/log-in",
+        element: <LogIn />,
+      },
+    ],
+  },
+]);
 
-root.render(
-  <React.StrictMode>
-    <ColorModeScript />
-    <App />
-  </React.StrictMode>,
-)
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 
+root.render(<RouterProvider router={router} />);

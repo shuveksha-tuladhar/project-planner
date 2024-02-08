@@ -3,6 +3,10 @@ import { ChakraProvider, Box, Button, Flex } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { Input } from "@chakra-ui/react";
+import { Outlet } from "react-router-dom";
+import Header from "./Components/Header";
+
+
 
 function App() {
   const [firstName, setFirstName] = useState("Shuveksha");
@@ -26,6 +30,8 @@ function App() {
 
   return (
     <ChakraProvider>
+      <Header/>
+      <Outlet/>
       <Box m={10} display="flex" gap={4}>
         <Input
           placeholder="Type in a first name"
