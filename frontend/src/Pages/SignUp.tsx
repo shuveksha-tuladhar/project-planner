@@ -10,20 +10,36 @@ import {
 import axios from "axios";
 import { useState } from "react";
 
+const isInvalidEmail = (email: string) => {
+  const emailFormat = /\S+@\S+\.\S+/;
+  if (email.match(emailFormat) && email.length > 0) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [secondPassword, setSecondPassword] = useState("");
+
   const [submitClickedName, setSubmitClickedName] = useState(false);
   const [submitClickedEmail, setSubmitClickedEmail] = useState(false);
   const [submitClickedUsername, setSubmitClickedUsername] = useState(false);
   const [submitClickedPassword, setSubmitClickedPassword] = useState(false);
+  const [submitClickedSecondPassword, setSubmitClickedSecondPassword] =
+    useState(false);
 
   const isErrorName = name === "" && submitClickedName;
-  const isErrorEmail = email === "" && submitClickedEmail;
+  const isErrorEmail = isInvalidEmail(email) && submitClickedEmail;
   const isErrorUsername = username === "" && submitClickedUsername;
   const isErrorPassword = password === "" && submitClickedPassword;
+  const isErrorSecondPassword =
+    (secondPassword !== password && submitClickedPassword) ||
+    (secondPassword === "" && submitClickedPassword);
 
   const onChangeName = (e: any) => {
     setSubmitClickedName(false);
@@ -49,6 +65,12 @@ const SignUp = () => {
     setPassword(e.target.value);
   };
 
+  const onChangeSecondPassword = (e: any) => {
+    setSubmitClickedSecondPassword(false);
+    console.log(e.target.value);
+    setSecondPassword(e.target.value);
+  };
+
   const onSubmit = () => {
     // console.log("Name:", name);
     // console.log("Email:", email);
@@ -58,29 +80,38 @@ const SignUp = () => {
     setSubmitClickedEmail(true);
     setSubmitClickedUsername(true);
     setSubmitClickedPassword(true);
+    setSubmitClickedSecondPassword(true);
 
-    if (name === "" || email === "" || username=== "" || password === ""){
-        console.log("ERRORS")
+    if (
+      name === "" ||
+      isInvalidEmail(email) ||
+      username === "" ||
+      password === "" || 
+      secondPassword === "" ||
+      secondPassword !== password
+    ) {
+      console.log("ERRORS");
     } else {
-    axios
-      .post("http://localhost:4000/auth/sign-up", {
-        name,
-        email,
-        username,
-        password,
-      })
-      .then((response) => {
-        console.log("RESPONSE", response);
-        setName("");
-        setEmail("");
-        setUsername("");
-        setPassword("");
-        setSubmitClickedName(false);
-        setSubmitClickedEmail(false);
-        setSubmitClickedUsername(false);
-        setSubmitClickedPassword(false);
-      });
-    };
+      axios
+        .post("http://localhost:4000/auth/sign-up", {
+          name,
+          email,
+          username,
+          password,
+        })
+        .then((response) => {
+          console.log("RESPONSE", response);
+          setName("");
+          setEmail("");
+          setUsername("");
+          setPassword("");
+          setSubmitClickedName(false);
+          setSubmitClickedEmail(false);
+          setSubmitClickedUsername(false);
+          setSubmitClickedPassword(false);
+          setSubmitClickedSecondPassword(false);
+        });
+    }
   };
 
   return (
@@ -108,7 +139,9 @@ const SignUp = () => {
           <FormLabel>Email Address</FormLabel>
           <Input type="email" value={email} onChange={onChangeEmail} />
           {!isErrorEmail ? null : (
-            <FormErrorMessage>A valid email address is required.</FormErrorMessage>
+            <FormErrorMessage>
+              A valid email address is required.
+            </FormErrorMessage>
           )}
         </FormControl>
 
@@ -125,6 +158,18 @@ const SignUp = () => {
           <Input type="password" value={password} onChange={onChangePassword} />
           {!isErrorPassword ? null : (
             <FormErrorMessage>Password is required.</FormErrorMessage>
+          )}
+        </FormControl>
+
+        <FormControl isInvalid={isErrorSecondPassword} isRequired>
+          <FormLabel>Enter Password Again</FormLabel>
+          <Input
+            type="password"
+            value={secondPassword}
+            onChange={onChangeSecondPassword}
+          />
+          {!isErrorSecondPassword ? null : (
+            <FormErrorMessage>Passwords must match.</FormErrorMessage>
           )}
         </FormControl>
 
