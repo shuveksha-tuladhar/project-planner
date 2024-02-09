@@ -19,6 +19,14 @@ const isInvalidEmail = (email: string) => {
   }
 };
 
+const isInvalidpass2 = (pass1:string, pass2: string) => {
+    if (pass2 !== pass1) {
+        return false;
+    } else {
+        return true; 
+    }
+}
+
 const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,8 +46,8 @@ const SignUp = () => {
   const isErrorUsername = username === "" && submitClickedUsername;
   const isErrorPassword = password === "" && submitClickedPassword;
   const isErrorSecondPassword =
-    (secondPassword !== password && submitClickedPassword) ||
-    (secondPassword === "" && submitClickedPassword);
+   isInvalidpass2 (password, secondPassword) && submitClickedSecondPassword;
+    
 
   const onChangeName = (e: any) => {
     setSubmitClickedName(false);
@@ -76,6 +84,11 @@ const SignUp = () => {
     // console.log("Email:", email);
     // console.log("Username:", username);
     // console.log("Password:", password);
+
+    // console.log("Password: ", password);
+    // console.log("Second Password: ", secondPassword);
+    // console.log(isInvalidpass2(password, secondPassword));
+
     setSubmitClickedName(true);
     setSubmitClickedEmail(true);
     setSubmitClickedUsername(true);
@@ -91,6 +104,7 @@ const SignUp = () => {
       secondPassword !== password
     ) {
       console.log("ERRORS");
+      console.log(isErrorSecondPassword);
     } else {
       axios
         .post("http://localhost:4000/auth/sign-up", {
@@ -105,6 +119,7 @@ const SignUp = () => {
           setEmail("");
           setUsername("");
           setPassword("");
+          setSecondPassword("");
           setSubmitClickedName(false);
           setSubmitClickedEmail(false);
           setSubmitClickedUsername(false);
