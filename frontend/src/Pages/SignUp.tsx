@@ -6,9 +6,11 @@ import {
   FormLabel,
   Input,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const isInvalidEmail = (email: string) => {
   const emailFormat = /\S+@\S+\.\S+/;
@@ -19,15 +21,18 @@ const isInvalidEmail = (email: string) => {
   }
 };
 
-const isInvalidpass2 = (pass1:string, pass2: string) => {
-    if (pass2 !== pass1) {
-        return false;
-    } else {
-        return true; 
-    }
-}
+const isInvalidpass2 = (pass1: string, pass2: string) => {
+  if (pass2 !== pass1) {
+    return false;
+  } else {
+    return true;
+  }
+};
 
 const SignUp = () => {
+  const navigate = useNavigate();
+  const toast = useToast();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -46,8 +51,7 @@ const SignUp = () => {
   const isErrorUsername = username === "" && submitClickedUsername;
   const isErrorPassword = password === "" && submitClickedPassword;
   const isErrorSecondPassword =
-   isInvalidpass2 (password, secondPassword) && submitClickedSecondPassword;
-    
+    isInvalidpass2(password, secondPassword) && submitClickedSecondPassword;
 
   const onChangeName = (e: any) => {
     setSubmitClickedName(false);
@@ -99,7 +103,7 @@ const SignUp = () => {
       name === "" ||
       isInvalidEmail(email) ||
       username === "" ||
-      password === "" || 
+      password === "" ||
       secondPassword === "" ||
       secondPassword !== password
     ) {
@@ -114,7 +118,11 @@ const SignUp = () => {
           password,
         })
         .then((response) => {
-          console.log("RESPONSE", response);
+          console.log("Response", response.data);
+          const token = response.data;
+          localStorage.setItem("token", token);
+        
+
           setName("");
           setEmail("");
           setUsername("");
@@ -125,6 +133,16 @@ const SignUp = () => {
           setSubmitClickedUsername(false);
           setSubmitClickedPassword(false);
           setSubmitClickedSecondPassword(false);
+
+          navigate("/projects");
+
+          toast({
+            title: 'Account created.',
+            description: "We've created your account for you.",
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          })
         });
     }
   };

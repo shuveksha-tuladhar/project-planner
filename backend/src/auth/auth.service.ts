@@ -4,6 +4,6 @@ import { Injectable } from '@nestjs/common';
 export class AuthService {
     signUp(signUpDto) {
         console.log('SIGN UP DTO', signUpDto)
-       
+        return 'fake token';       
     }
 }
