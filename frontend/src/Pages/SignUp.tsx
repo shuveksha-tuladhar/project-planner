@@ -6,6 +6,7 @@ import {
   FormLabel,
   Input,
   Text,
+  Toast,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -142,9 +143,31 @@ const SignUp = () => {
             status: 'success',
             duration: 3000,
             isClosable: true,
-          })
-        });
-    }
+          });
+        })
+        .catch((error) => {
+          setName("");
+          setEmail("");
+          setUsername("");
+          setPassword("");
+          setSecondPassword("");
+          setSubmitClickedName(false);
+          setSubmitClickedEmail(false);
+          setSubmitClickedUsername(false);
+          setSubmitClickedPassword(false);
+          setSubmitClickedSecondPassword(false);
+
+          // console.log("ERROR", error);
+          toast({
+            title: 'Error',
+            description: " We were not able to create your account. Please try again",
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          });
+        })
+
+    };
   };
 
   return (
