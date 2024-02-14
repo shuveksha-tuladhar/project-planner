@@ -1,35 +1,44 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import * as sanitizeHtml from 'sanitize-html';
 import { Transform } from 'class-transformer';
+import { AuthGuard } from './auth.guard';
 
 export class SignUpDto {
-    @IsNotEmpty()
-    @Transform((params) => sanitizeHtml(params.value))
-    name: string;
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  name: string;
 
-    @IsEmail()
-    @Transform((params) => sanitizeHtml(params.value))
-    email: string;
+  @IsEmail()
+  @Transform((params) => sanitizeHtml(params.value))
+  email: string;
 
-    @IsNotEmpty()
-    @Transform((params) => sanitizeHtml(params.value))
-    username: string;
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  username: string;
 
-    @IsNotEmpty()
-    password: string;
-
+  @IsNotEmpty()
+  password: string;
 }
 
 @Controller('auth')
 export class AuthController {
+  constructor(private authService: AuthService) {}
 
-    constructor(private authService: AuthService) {}
+  @Post('sign-up')
+  signUp(@Body() signUpDto: SignUpDto) {
+    return this.authService.signUp(signUpDto);
+  }
 
-    @Post('sign-up')
-    signUp(@Body() signUpDto: SignUpDto){
-        return this.authService.signUp(signUpDto);
+  @UseGuards(AuthGuard)
+  @Get('user-details')
+  getUser(@Request() req) {
+    if (req.user) {
+        return req.user;
+    } else {
+        return 'no user'
     }
-
+    
+  }
 }
