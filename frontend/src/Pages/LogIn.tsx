@@ -68,6 +68,7 @@ const LogIn = () => {
               })
               .catch((error) => {
                 
+                // console.log("Error:", error);
                 setUsername("");
                 setPassword("");
               

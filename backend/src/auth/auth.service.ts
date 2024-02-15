@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
@@ -22,11 +22,11 @@ constructor(private userService: UsersService,
 
     async signUp(signUpDto: SignUpDto) {
         // check if username already exists
-        const usernameExists = (await this.userService.findUserByUsername(signUpDto.username)).length > 0;
+        const usernameExists = (await this.userService.findUserByUsername(signUpDto.username))?.username;
         // console.log('USER Exists:', usernameExists);
 
         //check if email already exists
-        const emailExists = (await this.userService.findUserByEmail(signUpDto.email)).length > 0;
+        const emailExists = (await this.userService.findUserByEmail(signUpDto.email))?.email;
         // console.log('Email Exists:', emailExists);
 
         if (usernameExists) {
@@ -48,8 +48,30 @@ constructor(private userService: UsersService,
         return this.createAccessToken(user);       
     }
 
+    async verifyPassword(enteredPassword: string, existingPassword: string) {
+        return await bcrypt.compare(enteredPassword, existingPassword)
+    }
+
     async logIn(logInDto: LogInDto) {
-        console.log('LOGIN DTO:', logInDto);
-        return ("fake-token");
+       //check that user exists
+       const user = await this.userService.findUserByUsername(logInDto.username);
+        // console.log("USER:", user)
+
+       //if user doesn't exits, throw unauthorized error
+       if (!user) {
+        throw new UnauthorizedException("username doesn't exists");
+       }
+
+       //verify that passwords match 
+       const passwordMatch = await this.verifyPassword(logInDto.password, user.password);
+        console.log('Password Match', passwordMatch);
+
+       //if the password don't match, throw unauthorized error
+       if (!passwordMatch) {
+        throw new UnauthorizedException("Incorrect Password");
+       }
+
+       //create and return an access token
+        return await this.createAccessToken(user);
     }
 }
