@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
-import { SignUpDto } from './auth.controller';
+import { LogInDto, SignUpDto } from './auth.controller';
 
 
 @Injectable()
@@ -36,7 +36,7 @@ constructor(private userService: UsersService,
         if (emailExists) {
             throw new BadRequestException('Email already exists')
         }
-        
+
         //hash password
         const hashedPassword = await this.hashPassword(signUpDto.password);
         console.log('HASHED PASSWORD:', hashedPassword);
@@ -46,5 +46,10 @@ constructor(private userService: UsersService,
         const user = await this.userService.createUser(signUpDto);
         // console.log('User', user);
         return this.createAccessToken(user);       
+    }
+
+    async logIn(logInDto: LogInDto) {
+        console.log('LOGIN DTO:', logInDto);
+        return ("fake-token");
     }
 }

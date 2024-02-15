@@ -19,8 +19,20 @@ export class SignUpDto {
   username: string;
 
   @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
   password: string;
 }
+
+export class LogInDto {
+    
+    @IsNotEmpty()
+    @Transform((params) => sanitizeHtml(params.value))
+    username: string;
+  
+    @IsNotEmpty()
+    @Transform((params) => sanitizeHtml(params.value))
+    password: string;
+  }
 
 @Controller('auth')
 export class AuthController {
@@ -31,6 +43,10 @@ export class AuthController {
     return this.authService.signUp(signUpDto);
   }
 
+  @Post('log-in')
+  logIn(@Body() logInDto: LogInDto) {
+    return this.authService.logIn(logInDto);
+  }
   @UseGuards(AuthGuard)
   @Get('user-details')
   getUser(@Request() req) {
