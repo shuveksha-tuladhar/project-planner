@@ -74,4 +74,8 @@ constructor(private userService: UsersService,
        //create and return an access token
         return await this.createAccessToken(user);
     }
+
+    async getProfileData(username: string){
+        return await this.userService.findUserByUsername(username);
+    }
 }
