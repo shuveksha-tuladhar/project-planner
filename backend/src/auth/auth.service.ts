@@ -37,6 +37,7 @@ constructor(private userService: UsersService,
             throw new BadRequestException('Email already exists')
         }
 
+
         //hash password
         const hashedPassword = await this.hashPassword(signUpDto.password);
         console.log('HASHED PASSWORD:', hashedPassword);
@@ -76,6 +77,12 @@ constructor(private userService: UsersService,
     }
 
     async getProfileData(username: string){
-        return await this.userService.findUserByUsername(username);
+        const user = await this.userService.findUserByUsername(username);
+        return {
+           email: user.email,
+           name: user.name,
+           username: user.username,
+        }
+
     }
 }
