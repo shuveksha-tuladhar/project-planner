@@ -12,25 +12,21 @@ Todo List is a lightweight and user-friendly to-do list software designed to hel
 
 ## Getting Started
 - Clone this repository
+  ```
+  git@github.com:shuveksha-tuladhar/todo-list.git
+  ```
+  
 - Set Up environment variable
 
   ```
-    HOST=0.0.0.0
-    PORT=1337
-    APP_KEYS=<APPS_KEYS>
-    API_TOKEN_SALT=<API_TOKEN_SALT>
-    ADMIN_JWT_SECRET=<JWT_TOKEN>
-    TRANSFER_TOKEN_SALT=<TRANSFER_TOKEN_SALT>
-  
+ 
     # Database
-    DATABASE_CLIENT=postgres
-    DATABASE_HOST=127.0.0.1
-    DATABASE_PORT=5432
-    DATABASE_NAME=todolist
-    DATABASE_USERNAME=<DB_USERNAME>
-    DATABASE_PASSWORD=<DB_PASSWORD>
-    DATABASE_SSL=false  
-  ```
+    DB_PORT=5432
+    DB_HOST=127.0.0.1
+    DB_USERNAME=YOUR_USERNAME
+    DB_PASSWORD=YOUR_PASSWORD
+    DB_NAME=YOUR_DATABASENAME
+   ```
 
  
 **Frontend**
