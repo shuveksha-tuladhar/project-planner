@@ -2,34 +2,31 @@
 Todo List is a lightweight and user-friendly to-do list software designed to help you manage your tasks and boost productivity. With a clean and intuitive interface, Todo List makes it easy to organize your daily activities, set priorities, and track progress effortlessly.
 
 ## Technologies Used
--TypeScript
--React
--React Router
--Chakra UI
--Node.js
--NestJS
--PostgreSQL with TypeORM
+- TypeScript
+- React
+- React Router
+- Chakra UI
+- Node.js
+- NestJS
+- PostgreSQL with TypeORM
+
+## Application Progress
+My project progress can be tracked on my [Trello Board](https://trello.com/invite/b/LBuhUjOW/ATTI8da701cab85553fd0d3c717a5a57e4cd6D776516/to-do-list-main)
 
 ## Getting Started
 - Clone this repository
+  ```
+  https://github.com/shuveksha-tuladhar/todo-list.git
+  ```
 - Set Up environment variable
 
   ```
-    HOST=0.0.0.0
-    PORT=1337
-    APP_KEYS=<APPS_KEYS>
-    API_TOKEN_SALT=<API_TOKEN_SALT>
-    ADMIN_JWT_SECRET=<JWT_TOKEN>
-    TRANSFER_TOKEN_SALT=<TRANSFER_TOKEN_SALT>
-  
-    # Database
-    DATABASE_CLIENT=postgres
-    DATABASE_HOST=127.0.0.1
-    DATABASE_PORT=5432
-    DATABASE_NAME=todolist
-    DATABASE_USERNAME=<DB_USERNAME>
-    DATABASE_PASSWORD=<DB_PASSWORD>
-    DATABASE_SSL=false  
+   # Database
+   DB_PORT=5432
+   DB_HOST=127.0.0.1
+   DB_USERNAME=p
+   DB_PASSWORD=
+   DB_NAME=
   ```
 
  
@@ -44,7 +41,7 @@ npm install
 ```
 - Run the frontend server on the port 3000.
 ```
-npm run dev
+npm start
 ```
 
 **Backend**
@@ -56,7 +53,7 @@ cd backend
 ```
 npm install
 ```
-- Run the backend server on the port 1337
+- Run the backend server on the port 4000
 ```
-npm run develop
+npm run start:dev
 ```
