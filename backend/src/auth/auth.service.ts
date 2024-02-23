@@ -21,7 +21,8 @@ export class AuthService {
   }
 
   async createAccessToken(user) {
-    const payload = { sub: user.userId, username: user.username };
+    console.log('USER..', user.id)
+    const payload = { sub: user.userId};
     return await this.jwtService.signAsync(payload);
   }
 
@@ -100,13 +101,21 @@ export class AuthService {
     } else {
         user[accountDetailDto.field] = accountDetailDto.value;
     }
-    console.log("User dto:",user );
+    // console.log("User dto:",user );
+    const updatedUser = await this.userService.createUser(user);
+    return {
+      name: updatedUser.name,
+      email: updatedUser.email,
+      username: updatedUser.username,
+
+    }
+
     //save the user in database
     return await this.userService.createUser(user);
   }
 
-  async getProfileData(username: string) {
-    const user = await this.userService.findUserByUsername(username);
+  async getProfileData(id: number) {
+    const user = await this.userService.findUserById(id);
     return {
       email: user.email,
       name: user.name,
