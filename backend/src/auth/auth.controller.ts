@@ -78,8 +78,8 @@ export class AuthController {
   }
 
   @Post("reset-password")
-  sendResetPassword(@Body() email: Email ) {
-    console.log("Email reset:", email)
+  sendResetPassword(@Body() body: Email ) {
+    return this.authService.sendResetPasswordEmail(body.email);
    
   }
 }
