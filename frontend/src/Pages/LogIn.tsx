@@ -5,12 +5,6 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
   Text,
   useDisclosure,
   useToast,
@@ -19,6 +13,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Context } from "../App";
+import ForgotPasswordModal from "../Components/Login/ForgotPasswordModal";
 
 const LogIn = () => {
   const navigate = useNavigate();
@@ -103,11 +98,7 @@ const LogIn = () => {
     }
   };
 
-  const onResetPassword = () => {
-    console.log("Reset password clicked");
-  };
-
-  return (
+   return (
     <Box>
       <Text textAlign="center" mb={4} fontSize={20}>
         Log into Your Account
@@ -145,25 +136,8 @@ const LogIn = () => {
         <Text lineHeight="40px">Forgot Password?</Text>
         <Button onClick={onOpen}>Reset Password</Button>
         
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader></ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <Box>
-                <Text mb={4}>
-                  Enter the email address associated with your account:
-                </Text>
-                <Input type="text"></Input>
-              </Box>
-            </ModalBody>
+        <ForgotPasswordModal isOpen={isOpen} onClose={onClose}/>
 
-            <Button mx={6} mb={4} mt={2} onClick={onClose}>
-              Send Verification Email
-            </Button>
-          </ModalContent>
-        </Modal>
       </Box>
     </Box>
   );
