@@ -42,10 +42,10 @@ const Profile = () => {
                 <Avatar size='2xl' name={data.name} bg='teal.500' />
                 </Box>
                 <Box w='100%' display='flex' flexDirection='column' gap={4} >
-                    <UserDetailsRow field="Name" value={data.name}/>
-                    <UserDetailsRow field="Email Address" value={data.email}/>
-                    <UserDetailsRow field="Username" value={data.username}/>
-                    <UserDetailsRow field="Password" value="***********"/>
+                    <UserDetailsRow field="Name" value={data.name} username={data.username}/>
+                    <UserDetailsRow field="Email" value={data.email} username={data.username}/>
+                    <UserDetailsRow field="Username" value={data.username} username={data.username}/>
+                    <UserDetailsRow field="Password" value="***********" username={data.username}/>
                 </Box>
             </Box>
             <Box display='flex' gap={4} justifyContent='center' >
