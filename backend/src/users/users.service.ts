@@ -23,7 +23,9 @@ export class UsersService {
     return await this.usersRepository.findOneBy({ email });
   }
   async createUser(user: SignUpDto) {
-    console.log('USER', user);
     return await this.usersRepository.save({ ...user });
+  }
+  async deleteUser(id: number) {
+    return await this.usersRepository.delete(id);
   }
 }

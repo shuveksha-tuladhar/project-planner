@@ -168,7 +168,9 @@ export class AuthService {
         user.password = hashedPassword;
         return await this.userService.createUser(user);
       });
+  }
 
-   
+  async deleteUser(id: number) {
+    return await this.userService.deleteUser(id);
   }
 }

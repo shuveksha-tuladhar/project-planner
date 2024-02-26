@@ -98,4 +98,11 @@ export class AuthController {
   saveNewPassword(@Body() body: NewPasswordDto ) {
     return this.authService.saveNewPassword(body.newPassword, body.id, body.token);
   }
+
+  @UseGuards(AuthGuard)
+  @Post('delete-user')
+  deleteUser(@Request() req){
+      return this.authService.deleteUser(req.user.sub);
+  }
+
 }
