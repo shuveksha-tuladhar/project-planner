@@ -10,6 +10,7 @@ import {
   AccountDetailDto,
   Email,
   LogInDto,
+  NewPasswordDto,
   SignUpDto,
 } from './auth.controller';
 import { User } from 'src/users/entities/user.entity';
@@ -19,7 +20,7 @@ import { MailService } from 'src/mail/mail.service';
 export class AuthService {
   constructor(
     private userService: UsersService,
-    private mailService: MailService, 
+    private mailService: MailService,
     private jwtService: JwtService,
   ) {}
 
@@ -34,7 +35,7 @@ export class AuthService {
     if (secret) {
       return await this.jwtService.signAsync(payload, {
         secret: user.password,
-        expiresIn: '10m'
+        expiresIn: '10m',
       });
     } else {
       return await this.jwtService.signAsync(payload);
@@ -136,7 +137,7 @@ export class AuthService {
       username: user.username,
     };
   }
-s
+  s;
   async sendResetPasswordEmail(email: string) {
     const user = await this.userService.findUserByEmail(email);
 
@@ -145,8 +146,31 @@ s
     }
     //create a JWT with the user's current hashed password as secret
     const token = await this.createAccessToken(user, user.password);
- 
+
     //send an email to user with a link to a reset password page on the frontend with the JWT and userId as params
     return await this.mailService.sendPasswordResetEmail(user, token);
+  }
+
+  async saveNewPassword(newPassword: string, id: number, token: string) {
+    //get the user associated with that id
+    const user = await this.userService.findUserById(id);
+
+    // verify token using the user we just looked up hashed password
+    await this.jwtService
+      .verifyAsync(token, {
+        secret: user.password,
+      })
+      .catch(() => {
+        throw new UnauthorizedException('Token is invalid');
+      })
+      .then(async() => {
+        const hashedPassword = await this.hashPassword(newPassword);
+        user.password = hashedPassword;
+        return await this.userService.createUser(user);
+      });
+  }
+
+  async deleteUser(id: number) {
+    return await this.userService.deleteUser(id);
   }
 }
