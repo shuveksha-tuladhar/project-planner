@@ -105,4 +105,11 @@ export class AuthController {
       return this.authService.deleteUser(req.user.sub);
   }
 
+  @UseGuards(AuthGuard)
+  @Get('user-projects')
+  getUserProjects(@Request() req) {
+    return this.authService.getProfileData(req.user.sub);
+  }
+
+
 }
