@@ -1,5 +1,5 @@
-# Todo List
-Todo List is a lightweight and user-friendly to-do list software designed to help you manage your tasks and boost productivity. With a clean and intuitive interface, Todo List makes it easy to organize your daily activities, set priorities, and track progress effortlessly.
+# Project Planner
+Project Planner is a lightweight and user-friendly to-do list software designed to help you manage your tasks and boost productivity. With a clean and intuitive interface, Todo List makes it easy to organize your daily activities, set priorities, and track progress effortlessly.
 
 ## Technologies Used
 - TypeScript
