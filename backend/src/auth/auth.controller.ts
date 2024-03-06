@@ -1,6 +1,13 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
 import * as sanitizeHtml from 'sanitize-html';
 import { Transform } from 'class-transformer';
 import { AuthGuard } from './auth.guard';
@@ -24,45 +31,53 @@ export class SignUpDto {
 }
 
 export class LogInDto {
-    
-    @IsNotEmpty()
-    @Transform((params) => sanitizeHtml(params.value))
-    username: string;
-  
-    @IsNotEmpty()
-    @Transform((params) => sanitizeHtml(params.value))
-    password: string;
-  }
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  username: string;
 
-  export class AccountDetailDto {
-    @IsNotEmpty()
-    username: string;
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  password: string;
+}
 
-    @IsNotEmpty()
-    field: string;
+export class AccountDetailDto {
+  @IsNotEmpty()
+  username: string;
 
-    @IsNotEmpty()
-    value: string;
-   }
+  @IsNotEmpty()
+  field: string;
 
-   export class Email {
-    @IsEmail(undefined, {message: "Please enter a valid email address"})
-    @Transform((params) => sanitizeHtml(params.value))
-    email: string;
-   }
+  @IsNotEmpty()
+  value: string;
+}
 
-   export class NewPasswordDto {
-    @IsNotEmpty()
-    @Transform((params) => sanitizeHtml(params.value))
-    newPassword: string;
+export class Email {
+  @IsEmail(undefined, { message: 'Please enter a valid email address' })
+  @Transform((params) => sanitizeHtml(params.value))
+  email: string;
+}
 
-    @IsNotEmpty()
-    id: number;
+export class NewPasswordDto {
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  newPassword: string;
 
-    @IsNotEmpty()
-    token: string;
-  }
+  @IsNotEmpty()
+  id: number;
 
+  @IsNotEmpty()
+  token: string;
+}
+
+export class ProjectDto {
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  name: string;
+
+  @IsOptional()
+  @Transform((params) => sanitizeHtml(params.value))
+  description: string;
+}
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -86,23 +101,27 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfileData(@Request() req) {
-    return this.authService.getProfileData(req.user.sub)
+    return this.authService.getProfileData(req.user.sub);
   }
 
-  @Post("reset-password")
-  sendResetPassword(@Body() body: Email ) {
+  @Post('reset-password')
+  sendResetPassword(@Body() body: Email) {
     return this.authService.sendResetPasswordEmail(body.email);
   }
 
-  @Post("save-new-password")
-  saveNewPassword(@Body() body: NewPasswordDto ) {
-    return this.authService.saveNewPassword(body.newPassword, body.id, body.token);
+  @Post('save-new-password')
+  saveNewPassword(@Body() body: NewPasswordDto) {
+    return this.authService.saveNewPassword(
+      body.newPassword,
+      body.id,
+      body.token,
+    );
   }
 
   @UseGuards(AuthGuard)
   @Post('delete-user')
-  deleteUser(@Request() req){
-      return this.authService.deleteUser(req.user.sub);
+  deleteUser(@Request() req) {
+    return this.authService.deleteUser(req.user.sub);
   }
 
   @UseGuards(AuthGuard)
@@ -111,5 +130,15 @@ export class AuthController {
     return this.authService.getProfileData(req.user.sub);
   }
 
-
+  @UseGuards(AuthGuard)
+  @Post('create-project')
+  createProject(@Body() projectDto: ProjectDto, @Request() req) {
+    console.log('ProjectDto', projectDto);
+    console.log('Request', req.user.sub);
+    return this.authService.createProject(
+      projectDto.name,
+      projectDto.description,
+      req.user.sub,
+    );
+  }
 }

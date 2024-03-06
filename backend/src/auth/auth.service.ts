@@ -11,15 +11,18 @@ import {
   Email,
   LogInDto,
   NewPasswordDto,
+  ProjectDto,
   SignUpDto,
 } from './auth.controller';
 import { User } from 'src/users/entities/user.entity';
 import { MailService } from 'src/mail/mail.service';
+import { ProjectService } from 'src/projects/projects.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
+    private projectService: ProjectService,
     private mailService: MailService,
     private jwtService: JwtService,
   ) {}
@@ -172,5 +175,9 @@ export class AuthService {
 
   async deleteUser(id: number) {
     return await this.userService.deleteUser(id);
+  }
+
+  async createProject(name: string, description:string, userId: number) {
+    return await this.projectService.createProject(name, description, userId);
   }
 }
