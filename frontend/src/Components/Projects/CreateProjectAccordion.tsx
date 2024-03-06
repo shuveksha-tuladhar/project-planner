@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Project } from "../../Pages/Projects";
+import axios from "axios";
 
 type Props = {
     projects: Project[],
@@ -26,6 +27,7 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
   const [description, setDescription] = useState("");
 
   const [submitClickedName, setSubmitClickedName] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
  
   const isErrorName = name === "" && submitClickedName;
 
@@ -40,10 +42,28 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
 
   const onSubmit = () => {
     setSubmitClickedName(true);
-
+    if (name !== ""){
+      setIsOpen(false); 
+    }
     //call create-projects route on API to add project to database
+    const token = localStorage.getItem("token")
 
     //on response, update projects state with list of projects returned from API
+    axios.post(
+      "http://localhost:4000/auth/create-project",
+      {
+        name,
+        description, 
+      }, {
+        headers: { Authorization: `Bearer ${token}`}
+      })
+      .then((response) => {
+        console.log("RESPONSE", response.data)
+      })
+  
+    
+
+    setIsOpen(false);
 
     setProjects([...projects, {
         name,
@@ -57,12 +77,12 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
   }
 
   return (
-    <Accordion allowMultiple>
+    <Accordion allowToggle index={isOpen ? 0 : 1}>
       <AccordionItem border="1px solid">
         {({ isExpanded }) => (
           <>
             <h2>
-              <AccordionButton h="58 px">
+              <AccordionButton onClick={ () => setIsOpen(!isOpen)} h="58 px">
                 {isExpanded ? (
                   <MinusIcon fontSize="12px" />
                 ) : (
