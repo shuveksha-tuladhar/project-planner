@@ -127,14 +127,16 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('user-projects')
   getUserProjects(@Request() req) {
-    return this.authService.getProfileData(req.user.sub);
+    const user = this.authService.getProfileData(req.user.sub);
+    const projects = this.authService.getUserProjects(req.user.sub)
+   return this.authService.getUserProjects(req.user.sub);
   }
 
   @UseGuards(AuthGuard)
   @Post('create-project')
   createProject(@Body() projectDto: ProjectDto, @Request() req) {
-    console.log('ProjectDto', projectDto);
-    console.log('Request', req.user.sub);
+    // console.log('ProjectDto', projectDto);
+    // console.log('Request', req.user.sub);
     return this.authService.createProject(
       projectDto.name,
       projectDto.description,

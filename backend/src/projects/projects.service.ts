@@ -14,7 +14,7 @@ export class ProjectService {
       async getUserProjects(id: number) {
         return await this.projectsRepository.find({ where: { user: { id } } });
       }
-      async createProject(name, description, userId){
+      async createProject(name: string, description, userId){
          await this.projectsRepository.save({
           name,
           description,
