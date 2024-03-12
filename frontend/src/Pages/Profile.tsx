@@ -8,6 +8,8 @@ import axios from "axios";
 
 
 export type Data = {
+    projects(projects: any): [any, any];
+    user: Data;
     name: string,
     email: string,
     username: string,

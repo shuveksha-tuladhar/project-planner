@@ -11,6 +11,7 @@ import {
   FormLabel,
   Input,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Project } from "../../Pages/Projects";
@@ -23,6 +24,8 @@ type Props = {
 }
 
 const CreateProjectAccordion = ({projects, setProjects}: Props) => {
+  const toast = useToast();
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
@@ -58,22 +61,34 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
         headers: { Authorization: `Bearer ${token}`}
       })
       .then((response) => {
-        console.log("RESPONSE", response.data)
+       
+        setProjects(response.data);
+        setName("");
+        setDescription("");
+        setSubmitClickedName(false);
+
+        toast({
+          title: "Success",
+          description: "Your project has been created.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+
+
+      }).catch((error) => {
+          console.log("ERROR", error);
+
+          toast({
+            title: "Error",
+            description: "There was an error creating your project. Please try again.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+
       })
-  
     
-
-    setIsOpen(false);
-
-    setProjects([...projects, {
-        name,
-        description,
-        status: "To Do",
-    }])
-
-    setName("");
-    setDescription("");
-    setSubmitClickedName(false);
   }
 
   return (
