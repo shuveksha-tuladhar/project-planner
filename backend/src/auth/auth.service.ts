@@ -17,6 +17,7 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { MailService } from 'src/mail/mail.service';
 import { ProjectService } from 'src/projects/projects.service';
+import { ProjectsModule } from 'src/projects/projects.module';
 
 @Injectable()
 export class AuthService {
@@ -188,5 +189,11 @@ export class AuthService {
       user,
       projects
     }
+  }
+
+  async getProject(userId: number, id: number)  {
+    const projects = await this.projectService.getUserProjects(userId);
+    console.log("Projects:", projects);
+    return projects.filter((project) => project.id === id);
   }
 }

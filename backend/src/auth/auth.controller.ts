@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Request,
   UseGuards,
@@ -122,6 +123,13 @@ export class AuthController {
   @Post('delete-user')
   deleteUser(@Request() req) {
     return this.authService.deleteUser(req.user.sub);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('project/:id')
+  getProject(@Param('id') id: number, @Request() req) {
+    console.log('params', id)
+   return this.authService.getProject(req.user.sub, id);
   }
 
   @UseGuards(AuthGuard)
