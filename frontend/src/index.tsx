@@ -5,6 +5,7 @@ import {
   RouterProvider,
   createBrowserRouter,
   redirect,
+  useParams,
 } from "react-router-dom";
 
 import SignUp from "./Pages/SignUp";
@@ -14,6 +15,7 @@ import Profile from "./Pages/Profile";
 import axios from "axios";
 import { createStandaloneToast } from "@chakra-ui/react";
 import ResetPassword from "./Pages/ResetPassword";
+import Project from "./Pages/Project";
 
 const { ToastContainer, toast } = createStandaloneToast();
 
@@ -88,6 +90,59 @@ const router = createBrowserRouter([
             return redirect("/sign-up");
           }
         },
+      },
+      {
+          path: "/project/:id",
+          element: <Project/>,
+          loader: async ({params}) => {
+           
+             const token = localStorage.getItem("token");
+  
+            if (token) {
+              try {
+                const response = await axios.get(
+                  `http://localhost:4000/auth/project/${params.id}`,
+                  { headers: { Authorization: `Bearer ${token}` } }
+                );
+                
+                if (response.data.length === 0){
+                  toast({
+                    title: "An error occurred.",
+                    description: "You do not have access to that project!.",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                  });
+                  return redirect("/projects");
+                }
+
+                return response.data;
+              } catch (error) {
+       
+                console.log("ERRORS", error);
+                toast({
+                  title: "An error occurred.",
+                  description: "You must be signed in to view this page.",
+                  status: "error",
+                  duration: 3000,
+                  isClosable: true,
+                });
+                return redirect("/log-in");
+              }
+            } else {
+     
+              console.log("NO TOKEN");
+  
+              toast({
+                title: "An error occurred.",
+                description: "You must have an account to view this page.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+              });
+              return redirect("/sign-up");
+            }
+          },
       },
       {
         path: "/profile",
