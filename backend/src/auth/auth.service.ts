@@ -16,14 +16,16 @@ import {
 } from './auth.controller';
 import { User } from 'src/users/entities/user.entity';
 import { MailService } from 'src/mail/mail.service';
-import { ProjectService } from 'src/projects/projects.service';
+import { ProjectsService } from 'src/projects/projects.service';
 import { ProjectsModule } from 'src/projects/projects.module';
+import { FeatureService } from 'src/features/features.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
-    private projectService: ProjectService,
+    private projectService: ProjectsService,
+    private featuresService: FeatureService,
     private mailService: MailService,
     private jwtService: JwtService,
   ) {}
@@ -167,7 +169,7 @@ export class AuthService {
       .catch(() => {
         throw new UnauthorizedException('Token is invalid');
       })
-      .then(async() => {
+      .then(async () => {
         const hashedPassword = await this.hashPassword(newPassword);
         user.password = hashedPassword;
         return await this.userService.createUser(user);
@@ -178,22 +180,39 @@ export class AuthService {
     return await this.userService.deleteUser(id);
   }
 
-  async createProject(name: string, description:string, userId: number) {
+  async createProject(name: string, description: string, userId: number) {
     return await this.projectService.createProject(name, description, userId);
   }
 
-  async getUserProjects(userId: number){
+  async getUserProjects(userId: number) {
     const user = await this.getProfileData(userId);
     const projects = await this.projectService.getUserProjects(userId);
     return {
       user,
-      projects
-    }
+      projects,
+    };
   }
 
-  async getProject(userId: number, id: number)  {
+  async getProject(userId: number, id: number) {
     const projects = await this.projectService.getUserProjects(userId);
-    console.log("Projects:", projects);
     return projects.filter((project) => project.id === id);
+  }
+
+  async createFeature(
+    name: string,
+    description: string,
+    userId: number,
+    projectId: number,
+  ) {
+    const projects = await this.projectService.getUserProjects(userId);
+    // console.log('projectid', projectId)
+    const project = projects.find((project) => project.id === projectId);
+    // console.log('project exists', projectExists)
+
+    if (project.id) {
+      return await this.featuresService.getProjectFeatures(projectId);
+    } else {
+      throw new UnauthorizedException('project not found')
+    }
   }
 }
