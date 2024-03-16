@@ -49,10 +49,10 @@ const CreateFeatureAccordion = ({features, setFeatures}: Props) => {
     if (name !== ""){
       setIsOpen(false); 
     }
-    //call create-projects route on API to add project to database
+   
     const token = localStorage.getItem("token")
 
-    //on response, update projects state with list of projects returned from API
+
     axios.post(
       "http://localhost:4000/auth/create-feature",
       {
