@@ -1,14 +1,16 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, useDisclosure } from "@chakra-ui/react";
 import { useLoaderData, useParams } from "react-router";
 import { Project as ProjectType } from "./Projects";
-import CreateFeatureAccordion from "../Components/Projects/CreateFeatureAccordion";
+import CreateFeatureAccordion from "../Components/Features/CreateFeatureAccordion";
 import { SetStateAction, useState } from "react";
+import FeatureModal from "../Components/Features/FeatureModal";
 
 export type Feature = {
   name: string;
   status: "To Do" | "In Progress" | "Done!";
   userStoryCount: number;
   completedUserStories: number;
+  description?: string;
 };
 
 const columns = [
@@ -91,6 +93,9 @@ const Project = () => {
   const project = data[0];
 
   const [features, setFeatures] = useState(project.features);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [selectedFeature, setSelectedFeature] = useState(features[0]);
 
   console.log("Project", project);
   return (
@@ -119,6 +124,8 @@ const Project = () => {
                       display="flex"
                       justifyContent="space-between"
                       key={index}
+                      onClick={onOpen}
+                      _hover={{ cursor: "pointer" }}
                     >
                       <Text>{feature.name}</Text>
                       <Text>
@@ -143,6 +150,14 @@ const Project = () => {
           );
         })}
       </Box>
+      <FeatureModal
+        isOpen={isOpen}
+        onClose={onClose}
+        featureName={selectedFeature.name}
+        featureDescription={
+          selectedFeature.description || "There is no description"
+        }
+      />
     </Box>
   );
 };
