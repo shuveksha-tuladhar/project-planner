@@ -3,12 +3,14 @@ import { useLoaderData, useNavigate } from "react-router";
 import { Data } from "./Profile";
 import CreateProjectAccordion from "../Components/Projects/CreateProjectAccordion";
 import { useState } from "react";
+import { Feature } from "./Project";
 
 export type Project = {
   name: string;
   description?: string;
   status: string;
   id: number;
+  features: Feature[];
 };
 
 type LoaderData = {
@@ -43,6 +45,7 @@ const Projects = () => {
               mb={6}
               onClick={() => {goToProject(project.id)}}
               _hover={{cursor: "pointer", backgroundColor: "gray.100"}}
+              key={project.id}
             >
               <Text w="15%">{project.name}</Text>
               <Text noOfLines={1} flex={1}>

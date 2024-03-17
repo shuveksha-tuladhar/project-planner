@@ -21,10 +21,11 @@ import { Feature } from "../../Pages/Project";
 type Props = {
     features: Feature[],
     setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>
+    projectId: number;
 
 }
 
-const CreateFeatureAccordion = ({features, setFeatures}: Props) => {
+const CreateFeatureAccordion = ({features, setFeatures, projectId}: Props) => {
   const toast = useToast();
 
   const [name, setName] = useState("");
@@ -57,7 +58,8 @@ const CreateFeatureAccordion = ({features, setFeatures}: Props) => {
       "http://localhost:4000/auth/create-feature",
       {
         name,
-        description, 
+        description,
+        projectId
       }, {
         headers: { Authorization: `Bearer ${token}`}
       })
