@@ -16,10 +16,10 @@ export type Props = {
 };
 
 export type UserStory = {
-    name: string;
-    description: string;
-    status: string;
-}
+  name: string;
+  description: string;
+  status: string;
+};
 const sampleUserStories: UserStory[] = [
   {
     name: "User Story",
@@ -48,7 +48,12 @@ const sampleUserStories: UserStory[] = [
   },
 ];
 
-function FeatureModal({ isOpen, onClose, featureName, featureDescription }: Props) {
+function FeatureModal({
+  isOpen,
+  onClose,
+  featureName,
+  featureDescription,
+}: Props) {
   return (
     <Box>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -57,29 +62,23 @@ function FeatureModal({ isOpen, onClose, featureName, featureDescription }: Prop
           <Box m={10}>
             <Box mb={20}>
               <Text mb={4} fontSize={20}>
-              {featureName}
+                {featureName}
               </Text>
               <Text>{featureDescription}</Text>
             </Box>
 
             <ModalCloseButton />
-            {sampleUserStories.map((userStory, index) => {
-              return (
-                <Box
-                  border="1px"
-                  p={4}
-                  mt={4}
-                  display="flex"
-                  justifyContent="space-between"
-                  _hover={{ cursor: "pointer" }}
-                  w="100%"
-                >
-                  <Text>{userStory.name} {index + 1}</Text>
-                  <Text>{userStory.status}</Text>
-                </Box>
-              );
-            })}
-            <UserStoryDetailsAccordion/>
+            <Box display="flex" flexDirection="column" gap={4}>
+              {sampleUserStories.map((userStory, index) => {
+                return (
+                  <UserStoryDetailsAccordion
+                    name={`${userStory.name} ${index + 1}`}
+                    description={`${userStory.description} ${index + 1}`}
+                    status={userStory.status}
+                  />
+                );
+              })}
+            </Box>
           </Box>
         </ModalContent>
       </Modal>
