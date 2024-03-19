@@ -16,16 +16,16 @@ import {
 import { useState } from "react";
 
 import axios from "axios";
-import { Feature } from "../../Pages/Project";
+import { UserStory } from "../Features/FeatureModal";
 
 type Props = {
-    features: Feature[],
-    setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>
-    projectId: number;
+    userStories: UserStory[],
+    setUserStories: React.Dispatch<React.SetStateAction<UserStory[]>>
+    featureId: number;
 
 }
 
-const CreateFeatureAccordion = ({features, setFeatures, projectId}: Props) => {
+const CreateUsesrStoryAccordion = ({userStories: userStories, setUserStories, featureId}: Props) => {
   const toast = useToast();
 
   const [name, setName] = useState("");
@@ -49,23 +49,22 @@ const CreateFeatureAccordion = ({features, setFeatures, projectId}: Props) => {
     setSubmitClickedName(true);
     if (name !== ""){
       setIsOpen(false); 
-    
    
     const token = localStorage.getItem("token")
 
 
     axios.post(
-      "http://localhost:4000/auth/create-feature",
+      "http://localhost:4000/auth/create-user-story",
       {
         name,
         description,
-        projectId
+        featureId
       }, {
         headers: { Authorization: `Bearer ${token}`}
       })
       .then((response) => {
        
-        setFeatures(response.data);
+        setUserStories(response.data);
         setName("");
         setDescription("");
         setSubmitClickedName(false);
@@ -109,26 +108,26 @@ const CreateFeatureAccordion = ({features, setFeatures, projectId}: Props) => {
                   <AddIcon fontSize="12px" />
                 )}
                 <Box as="span" flex="1" textAlign="left" m={3}>
-                  Add a feature
+                  Add a user story
                 </Box>
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4} border="1px solid">
               <FormControl isInvalid={isErrorName} isRequired mb={4}>
-                <FormLabel>Feature Name:</FormLabel>
+                <FormLabel>User Story Name:</FormLabel>
                 <Input type="text" value={name} onChange={onChangeName} />
                 {!isErrorName ? null : (
-                  <FormErrorMessage>Feature Name is required.</FormErrorMessage>
+                  <FormErrorMessage>User Story Name is required.</FormErrorMessage>
                 )}
               </FormControl>
 
               <FormControl mb={4}>
-                <FormLabel>Feature Description</FormLabel>
+                <FormLabel>User Story Description:</FormLabel>
                 <Textarea value={description} onChange={onChangeDescription} />
               </FormControl>
               
               <Button w="100%" onClick={onSubmit}>
-          Create Feature
+          Create User Story
         </Button>
             
             </AccordionPanel>
@@ -139,4 +138,4 @@ const CreateFeatureAccordion = ({features, setFeatures, projectId}: Props) => {
   );
 };
 
-export default CreateFeatureAccordion;
+export default CreateUsesrStoryAccordion;

@@ -2,7 +2,7 @@ import { Box, Text, useDisclosure } from "@chakra-ui/react";
 import { useLoaderData, useParams } from "react-router";
 import { Project as ProjectType } from "./Projects";
 import CreateFeatureAccordion from "../Components/Features/CreateFeatureAccordion";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import FeatureModal from "../Components/Features/FeatureModal";
 
 export type Feature = {
@@ -11,6 +11,7 @@ export type Feature = {
   userStoryCount: number;
   completedUserStories: number;
   description?: string;
+  id: number;
 };
 
 const columns = [
@@ -124,7 +125,10 @@ const Project = () => {
                       display="flex"
                       justifyContent="space-between"
                       key={index}
-                      onClick={onOpen}
+                      onClick={() => {
+                        onOpen();
+                        setSelectedFeature(feature);
+                      }}
                       _hover={{ cursor: "pointer" }}
                     >
                       <Text>{feature.name}</Text>
@@ -157,6 +161,7 @@ const Project = () => {
         featureDescription={
           selectedFeature.description || "There is no description"
         }
+        featureId={selectedFeature.id}
       />
     </Box>
   );
