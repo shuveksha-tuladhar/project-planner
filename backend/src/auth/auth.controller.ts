@@ -92,6 +92,22 @@ export class FeatureDto {
   @IsNotEmpty()
   projectId: number;
 }
+
+export class UserStoryDto {
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  name: string;
+
+  @IsOptional()
+  @Transform((params) => sanitizeHtml(params.value))
+  description: string;
+
+  @IsNotEmpty()
+  projectId: number;
+
+  @IsNotEmpty()
+  featureId: number;
+}
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -168,13 +184,27 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('create-feature')
   createFeature(@Body() featureDto: FeatureDto, @Request() req) {
-    // console.log('ProjectDto', projectDto);
+    // console.log('featureDto', featureDto);
     // console.log('Request', req.user.sub);
     return this.authService.createFeature(
       featureDto.name,
       featureDto.description,
       req.user.sub,
       featureDto.projectId,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('create-user-story')
+  createUserStory(@Body() userStoryDto: UserStoryDto, @Request() req) {
+    console.log('userStoryDto', userStoryDto);
+    console.log('Request', req.user.sub);
+    return this.authService.createUserStory(
+      userStoryDto.name,
+      userStoryDto.description,
+      req.user.sub,
+      userStoryDto.projectId,
+      userStoryDto.featureId,
     );
   }
 }
