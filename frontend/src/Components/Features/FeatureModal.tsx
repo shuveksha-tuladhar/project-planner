@@ -8,14 +8,16 @@ import {
 } from "@chakra-ui/react";
 import UserStoryDetailsAccordion from "../UserStories/UserStoryDetailsAccordion";
 import CreateUsesrStoryAccordion from "../UserStories/CreateUserStoryAccordion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type Props = {
   isOpen: boolean;
   onClose: () => void;
   featureName: string;
   featureDescription: string;
+  projectId: number;
   featureId: number;
+  stories: UserStory[];
 };
 
 export type UserStory = {
@@ -23,42 +25,50 @@ export type UserStory = {
   description: string;
   status: string;
 };
-const sampleUserStories: UserStory[] = [
-  {
-    name: "User Story",
-    description: "This is my user story description",
-    status: "2/10",
-  },
-  {
-    name: "User Story",
-    description: "This is my user story description",
-    status: "4/12",
-  },
-  {
-    name: "User Story",
-    description: "This is my user story description",
-    status: "6/15",
-  },
-  {
-    name: "User Story",
-    description: "This is my user story description",
-    status: "4/10",
-  },
-  {
-    name: "User Story",
-    description: "This is my user story description",
-    status: "2/5",
-  },
-];
+// const sampleUserStories: UserStory[] = [
+//   {
+//     name: "User Story",
+//     description: "This is my user story description",
+//     status: "2/10",
+//   },
+//   {
+//     name: "User Story",
+//     description: "This is my user story description",
+//     status: "4/12",
+//   },
+//   {
+//     name: "User Story",
+//     description: "This is my user story description",
+//     status: "6/15",
+//   },
+//   {
+//     name: "User Story",
+//     description: "This is my user story description",
+//     status: "4/10",
+//   },
+//   {
+//     name: "User Story",
+//     description: "This is my user story description",
+//     status: "2/5",
+//   },
+// ];
 
 function FeatureModal({
   isOpen,
   onClose,
   featureName,
   featureDescription,
-  featureId
+  projectId,
+  featureId,
+  stories,
 }: Props) {
-  const [userStories, setUserStories] = useState(sampleUserStories);
+
+  const [userStories, setUserStories] = useState(stories);
+
+  useEffect(() => {
+    setUserStories(stories);
+  }, [stories])
+  
   return (
     <Box>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -74,11 +84,11 @@ function FeatureModal({
 
             <ModalCloseButton />
             <Box display="flex" flexDirection="column" gap={4}>
-              {sampleUserStories.map((userStory, index) => {
+              {userStories.map((userStory) => {
                 return (
                   <UserStoryDetailsAccordion
-                    name={`${userStory.name} ${index + 1}`}
-                    description={`${userStory.description} ${index + 1}`}
+                    name={`${userStory.name}`}
+                    description={`${userStory.description}`}
                     status={userStory.status}
                   />
                 );
@@ -86,6 +96,7 @@ function FeatureModal({
               <CreateUsesrStoryAccordion
                 userStories={userStories}
                 setUserStories={setUserStories}
+                projectId={projectId}
                 featureId={featureId}
               />
             </Box>

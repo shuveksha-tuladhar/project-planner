@@ -3,7 +3,7 @@ import { useLoaderData, useParams } from "react-router";
 import { Project as ProjectType } from "./Projects";
 import CreateFeatureAccordion from "../Components/Features/CreateFeatureAccordion";
 import { useState } from "react";
-import FeatureModal from "../Components/Features/FeatureModal";
+import FeatureModal, { UserStory } from "../Components/Features/FeatureModal";
 
 export type Feature = {
   name: string;
@@ -12,6 +12,7 @@ export type Feature = {
   completedUserStories: number;
   description?: string;
   id: number;
+  userStories: UserStory[];
 };
 
 const columns = [
@@ -98,7 +99,7 @@ const Project = () => {
 
   const [selectedFeature, setSelectedFeature] = useState(features[0]);
 
-  console.log("Project", project);
+
   return (
     <Box m={10}>
       <Box mb={20}>
@@ -161,7 +162,10 @@ const Project = () => {
         featureDescription={
           selectedFeature.description || "There is no description"
         }
+        projectId={project.id}
         featureId={selectedFeature.id}
+       stories={selectedFeature.userStories}
+     
       />
     </Box>
   );

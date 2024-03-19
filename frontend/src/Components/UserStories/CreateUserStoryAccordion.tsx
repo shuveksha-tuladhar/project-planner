@@ -23,11 +23,13 @@ type Props = {
   userStories: UserStory[];
   setUserStories: React.Dispatch<React.SetStateAction<UserStory[]>>;
   featureId: number;
+  projectId: number;
 };
 
 const CreateUsesrStoryAccordion = ({
   userStories: userStories,
   setUserStories,
+  projectId,
   featureId,
 }: Props) => {
   const toast = useToast();
@@ -63,6 +65,7 @@ const CreateUsesrStoryAccordion = ({
           {
             name,
             description,
+            projectId,
             featureId,
           },
           {
