@@ -92,6 +92,8 @@ const columns = [
 
 const Project = () => {
   const data = useLoaderData() as ProjectType[];
+
+  console.log("DATA", data)
   const project = data[0];
 
   const [features, setFeatures] = useState(project.features);

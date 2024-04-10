@@ -24,6 +24,7 @@ export type UserStory = {
   name: string;
   description: string;
   status: string;
+  id: number;
 };
 // const sampleUserStories: UserStory[] = [
 //   {
@@ -90,6 +91,9 @@ function FeatureModal({
                     name={`${userStory.name}`}
                     description={`${userStory.description}`}
                     status={userStory.status}
+                    projectId={projectId}
+                    featureId={featureId}
+                    userStoryId={userStory.id}
                   />
                 );
               })}
