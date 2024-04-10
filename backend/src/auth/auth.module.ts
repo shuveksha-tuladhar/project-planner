@@ -7,6 +7,7 @@ import { MailModule } from 'src/mail/mail.module';
 import { ProjectsModule } from 'src/projects/projects.module';
 import { FeatureModule } from 'src/features/features.module';
 import { UserStoriesModule } from 'src/userStories/userStory.module';
+import { TasksModule } from 'src/tasks/task.module';
 
 @Module({
   controllers: [AuthController],
@@ -16,6 +17,7 @@ import { UserStoriesModule } from 'src/userStories/userStory.module';
     ProjectsModule,
     FeatureModule,
     UserStoriesModule,
+    TasksModule,
     MailModule,
     JwtModule.register({
       global: true,

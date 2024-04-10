@@ -108,6 +108,21 @@ export class UserStoryDto {
   @IsNotEmpty()
   featureId: number;
 }
+
+export class TaskDto {
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  name: string;
+
+  @IsNotEmpty()
+  projectId: number;
+
+  @IsNotEmpty()
+  featureId: number;
+
+  @IsNotEmpty()
+  userStoryId: number;
+}
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -197,14 +212,28 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('create-user-story')
   createUserStory(@Body() userStoryDto: UserStoryDto, @Request() req) {
-    console.log('userStoryDto', userStoryDto);
-    console.log('Request', req.user.sub);
+    // console.log('userStoryDto', userStoryDto);
+    // console.log('Request', req.user.sub);
     return this.authService.createUserStory(
       userStoryDto.name,
       userStoryDto.description,
       req.user.sub,
       userStoryDto.projectId,
       userStoryDto.featureId,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('create-task')
+  createTask(@Body() taskDto: TaskDto, @Request() req) {
+    // console.log('taskDto', taskDto);
+    // console.log('Request', req.user.sub);
+    return this.authService.createTask(
+      taskDto.name,
+      req.user.sub,
+      taskDto.projectId,
+      taskDto.featureId,
+      taskDto.userStoryId
     );
   }
 }

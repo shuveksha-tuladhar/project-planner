@@ -20,6 +20,8 @@ import { ProjectsService } from 'src/projects/projects.service';
 import { ProjectsModule } from 'src/projects/projects.module';
 import { FeatureService } from 'src/features/features.service';
 import { UserStoriesService } from 'src/userStories/userStory.service';
+import { TasksService } from 'src/tasks/tasks.service';
+import { UserStory } from 'src/userStories/entities/userStory.entity';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +30,7 @@ export class AuthService {
     private projectService: ProjectsService,
     private featuresService: FeatureService,
     private userStoriesService: UserStoriesService,
+    private tasksService: TasksService,
     private mailService: MailService,
     private jwtService: JwtService,
   ) {}
@@ -244,6 +247,29 @@ export class AuthService {
       );
     } else {
       throw new UnauthorizedException('feature not found');
+    }
+  }
+
+  async createTask(
+    name: string,
+    userId: number,
+    projectId: number,
+    featureId: number,
+    userStoryId: number
+  ) {
+    const projects = await this.projectService.getUserProjects(userId);
+    const project = projects.find((project) => project.id === projectId);
+    const features = project.features;
+    const feature = features.find((feature) => feature.id === featureId);
+    const userStories = feature.userStories;
+    const userStory = userStories.find((userStory) => userStory.id === userStoryId)
+
+    console.log('userStory', userStory)
+
+    if (userStory.id) {
+      return await this.tasksService.createTask( name, userStoryId);
+    } else {
+      throw new UnauthorizedException('user story not found');
     }
   }
 }
