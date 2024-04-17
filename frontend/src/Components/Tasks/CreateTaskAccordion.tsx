@@ -16,17 +16,20 @@ import { useState } from "react";
 
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { Task } from "../UserStories/UserStoryDetailsAccordion";
 
 type Props = {
   featureId: number;
   projectId: number;
   userStoryId: number;
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 };
 
 const CreateTaskAccordion = ({
   projectId,
   featureId,
   userStoryId,
+  setTasks
 }: Props) => {
 
   const toast = useToast();
@@ -65,6 +68,7 @@ const CreateTaskAccordion = ({
           }
         )
         .then((response) => {
+          setTasks(response.data)
           setName("");
           setSubmitClickedName(false);
 
@@ -77,9 +81,9 @@ const CreateTaskAccordion = ({
           });
         })
         .catch((error) => {
-          
+          console.log("Error", error)
           //add error handling if error is token expired
-          if (error.response.data.message === "Unauthorized") {
+          if (error.response.data?.message === "Unauthorized") {
             toast({
               title: "Error",
               description: "Your session has expired, please log in again.",
@@ -142,3 +146,7 @@ const CreateTaskAccordion = ({
 };
 
 export default CreateTaskAccordion;
+function setTasks(data: any) {
+  throw new Error("Function not implemented.");
+}
+

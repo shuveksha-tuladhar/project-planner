@@ -6,7 +6,7 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
-import UserStoryDetailsAccordion from "../UserStories/UserStoryDetailsAccordion";
+import UserStoryDetailsAccordion, { Task } from "../UserStories/UserStoryDetailsAccordion";
 import CreateUsesrStoryAccordion from "../UserStories/CreateUserStoryAccordion";
 import { useEffect, useState } from "react";
 
@@ -25,34 +25,8 @@ export type UserStory = {
   description: string;
   status: string;
   id: number;
+  tasks: Task[];
 };
-// const sampleUserStories: UserStory[] = [
-//   {
-//     name: "User Story",
-//     description: "This is my user story description",
-//     status: "2/10",
-//   },
-//   {
-//     name: "User Story",
-//     description: "This is my user story description",
-//     status: "4/12",
-//   },
-//   {
-//     name: "User Story",
-//     description: "This is my user story description",
-//     status: "6/15",
-//   },
-//   {
-//     name: "User Story",
-//     description: "This is my user story description",
-//     status: "4/10",
-//   },
-//   {
-//     name: "User Story",
-//     description: "This is my user story description",
-//     status: "2/5",
-//   },
-// ];
 
 function FeatureModal({
   isOpen,
@@ -94,6 +68,7 @@ function FeatureModal({
                     projectId={projectId}
                     featureId={featureId}
                     userStoryId={userStory.id}
+                    tasks={userStory.tasks}
                   />
                 );
               })}
