@@ -15,6 +15,4 @@ export class Task {
   @Column({default: "To Do"})
   status: string;
 
-
-  
   }
