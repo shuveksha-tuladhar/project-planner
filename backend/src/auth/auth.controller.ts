@@ -187,9 +187,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('create-project')
   createProject(@Body() projectDto: ProjectDto, @Request() req) {
-    // console.log('ProjectDto', projectDto);
-    // console.log('Request', req.user.sub);
-    return this.authService.createProject(
+      return this.authService.createProject(
       projectDto.name,
       projectDto.description,
       req.user.sub,
@@ -199,8 +197,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('create-feature')
   createFeature(@Body() featureDto: FeatureDto, @Request() req) {
-    // console.log('featureDto', featureDto);
-    // console.log('Request', req.user.sub);
     return this.authService.createFeature(
       featureDto.name,
       featureDto.description,
@@ -212,9 +208,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('create-user-story')
   createUserStory(@Body() userStoryDto: UserStoryDto, @Request() req) {
-    // console.log('userStoryDto', userStoryDto);
-    // console.log('Request', req.user.sub);
-    return this.authService.createUserStory(
+      return this.authService.createUserStory(
       userStoryDto.name,
       userStoryDto.description,
       req.user.sub,
@@ -226,9 +220,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('create-task')
   createTask(@Body() taskDto: TaskDto, @Request() req) {
-    // console.log('taskDto', taskDto);
-    // console.log('Request', req.user.sub);
-    return this.authService.createTask(
+       return this.authService.createTask(
       taskDto.name,
       req.user.sub,
       taskDto.projectId,

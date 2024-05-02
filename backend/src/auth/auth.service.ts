@@ -200,7 +200,7 @@ export class AuthService {
 
   async getProject(userId: number, id: number) {
     const projects = await this.projectService.getUserProjects(userId);
-    return projects.filter((project) => project.id === id);
+    return projects.find((project) => project.id === id);
   }
 
   async createFeature(
