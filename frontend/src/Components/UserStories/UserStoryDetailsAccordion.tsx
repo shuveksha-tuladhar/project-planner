@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import CreateTaskAccordion from "../Tasks/CreateTaskAccordion";
 import { useState } from "react";
+import { Project } from "../../Pages/Projects";
 
 type Props = {
   name: string;
@@ -19,37 +20,25 @@ type Props = {
   projectId: number;
   userStoryId: number;
   tasks: Task[];
+  setProject: React.Dispatch<React.SetStateAction<Project>>;
 };
 
 export type Task = {
   name: string;
   status: string;
-}
+};
 
-// const sampleDevTasks = [
-//   {
-//     name: "Developer Task 1",
-//     status: "To do",
-//   },
-//   {
-//     name: "Developer Task 2",
-//     status: "To do",
-//   },
-//   {
-//     name: "Developer Task 3",
-//     status: "To do",
-//   },
-//   {
-//     name: "Developer Task 4",
-//     status: "To do",
-//   },
-//   {
-//     name: "Developer Task 5",
-//     status: "To do",
-//   },
-// ];
-const UserStoryDetailsAccordion = ({ name, description, status, projectId, featureId,  userStoryId, tasks }: Props) => {
-  const [devTasks, setDevTasks] = useState(tasks)
+const UserStoryDetailsAccordion = ({
+  name,
+  description,
+  status,
+  projectId,
+  featureId,
+  userStoryId,
+  tasks,
+  setProject,
+}: Props) => {
+  // const [devTasks, setDevTasks] = useState(tasks)
   return (
     <Accordion allowToggle>
       <AccordionItem border="1px">
@@ -65,7 +54,7 @@ const UserStoryDetailsAccordion = ({ name, description, status, projectId, featu
         </h2>
         <AccordionPanel borderTop="1px" p={0}>
           <Box p={4}>{description}</Box>
-          {devTasks.map((task) => {
+          {tasks.map((task) => {
             return (
               <Box
                 display="flex"
@@ -74,13 +63,19 @@ const UserStoryDetailsAccordion = ({ name, description, status, projectId, featu
                 alignItems="center"
                 px={4}
                 py={2}
+                key={task.name}
               >
                 <Text p={4}>{task.name}</Text>
                 <Button>{task.status}</Button>
               </Box>
             );
           })}
-          <CreateTaskAccordion featureId={featureId} projectId={projectId} userStoryId={userStoryId} setTasks={setDevTasks}/>
+          <CreateTaskAccordion
+            featureId={featureId}
+            projectId={projectId}
+            userStoryId={userStoryId}
+            setProject={setProject}
+          />
         </AccordionPanel>
       </AccordionItem>
     </Accordion>

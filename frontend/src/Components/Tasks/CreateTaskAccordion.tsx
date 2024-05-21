@@ -17,19 +17,20 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { Task } from "../UserStories/UserStoryDetailsAccordion";
+import { Project } from "../../Pages/Projects";
 
 type Props = {
   featureId: number;
   projectId: number;
   userStoryId: number;
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  setProject: React.Dispatch<React.SetStateAction<Project>>;
 };
 
 const CreateTaskAccordion = ({
   projectId,
   featureId,
   userStoryId,
-  setTasks
+  setProject
 }: Props) => {
 
   const toast = useToast();
@@ -68,7 +69,7 @@ const CreateTaskAccordion = ({
           }
         )
         .then((response) => {
-          setTasks(response.data)
+          setProject(response.data)
           setName("");
           setSubmitClickedName(false);
 

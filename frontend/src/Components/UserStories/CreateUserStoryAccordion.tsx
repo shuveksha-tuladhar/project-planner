@@ -18,19 +18,20 @@ import { useState } from "react";
 import axios from "axios";
 import { UserStory } from "../Features/FeatureModal";
 import { useNavigate } from "react-router";
+import { Project } from "../../Pages/Projects";
 
 type Props = {
-  userStories: UserStory[];
-  setUserStories: React.Dispatch<React.SetStateAction<UserStory[]>>;
+  // userStories: UserStory[];
+  // setUserStories: React.Dispatch<React.SetStateAction<UserStory[]>>;
   featureId: number;
   projectId: number;
+  setProject: React.Dispatch<React.SetStateAction<Project>>
 };
 
 const CreateUsesrStoryAccordion = ({
-  userStories: userStories,
-  setUserStories,
   projectId,
   featureId,
+  setProject,
 }: Props) => {
   const toast = useToast();
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ const CreateUsesrStoryAccordion = ({
           }
         )
         .then((response) => {
-          setUserStories(response.data);
+          setProject(response.data);
           setName("");
           setDescription("");
           setSubmitClickedName(false);

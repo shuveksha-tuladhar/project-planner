@@ -6,9 +6,11 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
-import UserStoryDetailsAccordion, { Task } from "../UserStories/UserStoryDetailsAccordion";
+import UserStoryDetailsAccordion, {
+  Task,
+} from "../UserStories/UserStoryDetailsAccordion";
 import CreateUsesrStoryAccordion from "../UserStories/CreateUserStoryAccordion";
-import { useEffect, useState } from "react";
+import { Project } from "../../Pages/Projects";
 
 export type Props = {
   isOpen: boolean;
@@ -18,6 +20,7 @@ export type Props = {
   projectId: number;
   featureId: number;
   stories: UserStory[];
+  setProject: React.Dispatch<React.SetStateAction<Project>>;
 };
 
 export type UserStory = {
@@ -36,14 +39,9 @@ function FeatureModal({
   projectId,
   featureId,
   stories,
+  setProject,
 }: Props) {
 
-  const [userStories, setUserStories] = useState(stories);
-
-  useEffect(() => {
-    setUserStories(stories);
-  }, [stories])
-  
   return (
     <Box>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -59,7 +57,7 @@ function FeatureModal({
 
             <ModalCloseButton />
             <Box display="flex" flexDirection="column" gap={4}>
-              {userStories.map((userStory) => {
+              {stories.map((userStory) => {
                 return (
                   <UserStoryDetailsAccordion
                     name={`${userStory.name}`}
@@ -69,14 +67,15 @@ function FeatureModal({
                     featureId={featureId}
                     userStoryId={userStory.id}
                     tasks={userStory.tasks}
+                    key={userStory.id}
+                    setProject={setProject}
                   />
                 );
               })}
               <CreateUsesrStoryAccordion
-                userStories={userStories}
-                setUserStories={setUserStories}
                 projectId={projectId}
                 featureId={featureId}
+                setProject={setProject}
               />
             </Box>
           </Box>

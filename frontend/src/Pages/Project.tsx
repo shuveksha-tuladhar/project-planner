@@ -4,6 +4,7 @@ import { Project as ProjectType } from "./Projects";
 import CreateFeatureAccordion from "../Components/Features/CreateFeatureAccordion";
 import { useState } from "react";
 import FeatureModal, { UserStory } from "../Components/Features/FeatureModal";
+import FeatureBox from "../Components/Features/FeatureBox";
 
 export type Feature = {
   name: string;
@@ -27,78 +28,10 @@ const columns = [
   },
 ];
 
-// const sampleFeatures: Feature[] = [
-//   {
-//     name: "Feature A",
-//     status: "To Do",
-//     userStoryCount: 10,
-//     completedUserStories: 0,
-//   },
-//   {
-//     name: "Feature B",
-//     status: "To Do",
-//     userStoryCount: 15,
-//     completedUserStories: 0,
-//   },
-//   {
-//     name: "Feature C",
-//     status: "In Progress",
-//     userStoryCount: 8,
-//     completedUserStories: 2,
-//   },
-//   {
-//     name: "Feature D",
-//     status: "In Progress",
-//     userStoryCount: 10,
-//     completedUserStories: 6,
-//   },
-//   {
-//     name: "Feature E",
-//     status: "Done!",
-//     userStoryCount: 12,
-//     completedUserStories: 12,
-//   },
-//   {
-//     name: "Feature F",
-//     status: "Done!",
-//     userStoryCount: 6,
-//     completedUserStories: 6,
-//   },
-//   {
-//     name: "Feature G",
-//     status: "Done!",
-//     userStoryCount: 2,
-//     completedUserStories: 2,
-//   },
-//   {
-//     name: "Feature H",
-//     status: "To Do",
-//     userStoryCount: 3,
-//     completedUserStories: 0,
-//   },
-//   {
-//     name: "Feature I",
-//     status: "To Do",
-//     userStoryCount: 7,
-//     completedUserStories: 0,
-//   },
-//   {
-//     name: "Feature J",
-//     status: "To Do",
-//     userStoryCount: 12,
-//     completedUserStories: 0,
-//   },
-// ];
-
 const Project = () => {
-  const data = useLoaderData() as ProjectType[];
-  const project = data[0];
+  const loaderData = useLoaderData() as ProjectType;
 
-  const [features, setFeatures] = useState<Feature[]>(project.features);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const [selectedFeature, setSelectedFeature] = useState(features[0]);
-
+  const [project, setProject] = useState(loaderData);
 
   return (
     <Box m={10}>
@@ -109,35 +42,22 @@ const Project = () => {
         <Text>{project.description || "There is no project description."}</Text>
       </Box>
       <Box display="flex" gap={10}>
-        {columns.map((column, indexCol) => {
+        {columns.map((column) => {
           return (
-            <Box border="1px" flex={1} height="100vh" key={indexCol}>
+            <Box border="1px" flex={1} height="100vh" key={column.name}>
               <Text textAlign="center" fontSize={20} mt={2}>
                 {column.name}
               </Text>
-              {features.map((feature, index) => {
+              {project.features.map((feature) => {
                 feature.status = "To Do";
                 if (column.name === feature.status) {
                   return (
-                    <Box
-                      border="1px"
-                      p={4}
-                      mx={4}
-                      mt={4}
-                      display="flex"
-                      justifyContent="space-between"
-                      key={index}
-                      onClick={() => {
-                        onOpen();
-                        setSelectedFeature(feature);
-                      }}
-                      _hover={{ cursor: "pointer" }}
-                    >
-                      <Text>{feature.name}</Text>
-                      <Text>
-                        {feature.completedUserStories}/{feature.userStoryCount}
-                      </Text>
-                    </Box>
+                    <FeatureBox
+                      feature={feature}
+                      projectId={project.id}
+                      setProject={setProject}
+                      key={feature.id}
+                    />
                   );
                 } else {
                   return null;
@@ -146,8 +66,8 @@ const Project = () => {
               <Box p={4}>
                 {column.name === "To Do" && (
                   <CreateFeatureAccordion
-                    features={features}
-                    setFeatures={setFeatures}
+                    features={project.features}
+                    setProject={setProject}
                     projectId={project.id}
                   />
                 )}
@@ -156,18 +76,6 @@ const Project = () => {
           );
         })}
       </Box>
-      <FeatureModal
-        isOpen={isOpen}
-        onClose={onClose}
-        featureName={selectedFeature.name}
-        featureDescription={
-          selectedFeature.description || "There is no description"
-        }
-        projectId={project.id}
-        featureId={selectedFeature.id}
-       stories={selectedFeature.userStories}
-     
-      />
     </Box>
   );
 };

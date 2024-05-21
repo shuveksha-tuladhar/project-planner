@@ -121,7 +121,6 @@ const SignUp = () => {
           password,
         })
         .then((response) => {
-          console.log("Response", response.data);
           const token = response.data;
           context.toggleLoggedIn();
           localStorage.setItem("token", token);
@@ -160,7 +159,6 @@ const SignUp = () => {
           setSubmitClickedPassword(false);
           setSubmitClickedSecondPassword(false);
 
-          // console.log("ERROR", error);
           toast({
             title: 'Error',
             description: " We were not able to create your account. Please try again",
