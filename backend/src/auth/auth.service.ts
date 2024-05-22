@@ -11,15 +11,26 @@ import {
   Email,
   LogInDto,
   NewPasswordDto,
+  ProjectDto,
   SignUpDto,
 } from './auth.controller';
 import { User } from 'src/users/entities/user.entity';
 import { MailService } from 'src/mail/mail.service';
+import { ProjectsService } from 'src/projects/projects.service';
+import { ProjectsModule } from 'src/projects/projects.module';
+import { FeatureService } from 'src/features/features.service';
+import { UserStoriesService } from 'src/userStories/userStory.service';
+import { TasksService } from 'src/tasks/tasks.service';
+import { UserStory } from 'src/userStories/entities/userStory.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
+    private projectService: ProjectsService,
+    private featuresService: FeatureService,
+    private userStoriesService: UserStoriesService,
+    private tasksService: TasksService,
     private mailService: MailService,
     private jwtService: JwtService,
   ) {}
@@ -163,7 +174,7 @@ export class AuthService {
       .catch(() => {
         throw new UnauthorizedException('Token is invalid');
       })
-      .then(async() => {
+      .then(async () => {
         const hashedPassword = await this.hashPassword(newPassword);
         user.password = hashedPassword;
         return await this.userService.createUser(user);
@@ -172,5 +183,99 @@ export class AuthService {
 
   async deleteUser(id: number) {
     return await this.userService.deleteUser(id);
+  }
+
+  async createProject(name: string, description: string, userId: number) {
+    return await this.projectService.createProject(name, description, userId);
+  }
+
+  async getUserProjects(userId: number) {
+    const user = await this.getProfileData(userId);
+    const projects = await this.projectService.getUserProjects(userId);
+    return {
+      user,
+      projects,
+    };
+  }
+
+  async getProject(userId: number, id: number) {
+    const projects = await this.projectService.getUserProjects(userId);
+    return projects.find((project) => project.id === id);
+  }
+
+  async createFeature(
+    name: string,
+    description: string,
+    userId: number,
+    projectId: number,
+  ) {
+    const projects = await this.projectService.getUserProjects(userId);
+    // console.log('projectid', projectId)
+    const project = projects.find((project) => project.id === projectId);
+    // console.log('project exists', project)
+
+    if (project.id) {
+      await this.featuresService.createFeature(name, description, projectId);
+      return await this.projectService.getProjectById(projectId);
+    } else {
+      throw new UnauthorizedException('project not found');
+    }
+  }
+
+  async createUserStory(
+    name: string,
+    description: string,
+    userId: number,
+    projectId: number,
+    featureId: number,
+  ) {
+    const projects = await this.projectService.getUserProjects(userId);
+    const project = projects.find((project) => project.id === projectId);
+
+    if (project) {
+      const features = project.features;
+      const feature = features.find((feature) => feature.id === featureId);
+
+      console.log('Feature', feature);
+
+      if (feature.id) {
+        await this.userStoriesService.createUserStory(
+          name,
+          description,
+          featureId,
+        );
+        return await this.projectService.getProjectById(projectId);
+      } else {
+        throw new UnauthorizedException('Unauthorized!');
+      }
+    } else {
+      throw new UnauthorizedException('Unauthorized!')
+    }
+  }
+
+  async createTask(
+    name: string,
+    userId: number,
+    projectId: number,
+    featureId: number,
+    userStoryId: number,
+  ) {
+    const projects = await this.projectService.getUserProjects(userId);
+    const project = projects.find((project) => project.id === projectId);
+    const features = project.features;
+    const feature = features.find((feature) => feature.id === featureId);
+    const userStories = feature.userStories;
+    const userStory = userStories.find(
+      (userStory) => userStory.id === userStoryId,
+    );
+
+    console.log('userStory', userStory);
+
+    if (userStory.id) {
+      await this.tasksService.createTask(name, userStoryId);
+      return await this.projectService.getProjectById(projectId);
+    } else {
+      throw new UnauthorizedException('user story not found');
+    }
   }
 }
