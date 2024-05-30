@@ -57,7 +57,7 @@ const UserStoryDetailsAccordion = ({
           <Box p={4}>{description}</Box>
           {tasks.map((task) => {
             return (
-              <TaskBox task={task}/>
+              <TaskBox task={task} setProject={setProject}/>
             );
           })}
           <CreateTaskAccordion

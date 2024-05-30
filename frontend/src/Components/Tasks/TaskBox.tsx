@@ -3,12 +3,14 @@ import { Task } from "../UserStories/UserStoryDetailsAccordion";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { Project } from "../../Pages/Projects";
 
 type Props = {
     task: Task; 
+    setProject: React.Dispatch<React.SetStateAction<Project>>;
 }
 
-const TaskBox = ({task} : Props) => {
+const TaskBox = ({task, setProject} : Props) => {
     const toast= useToast();
     const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ const TaskBox = ({task} : Props) => {
         headers: { Authorization: `Bearer ${token}`}
       })
       .then((response) => {
-        console.log("Response", response.data)
+        setProject(response.data)
       
         toast({
           title: "Success",

@@ -249,7 +249,7 @@ export class AuthService {
         throw new UnauthorizedException('Unauthorized!');
       }
     } else {
-      throw new UnauthorizedException('Unauthorized!')
+      throw new UnauthorizedException('Unauthorized!');
     }
   }
 
@@ -275,7 +275,7 @@ export class AuthService {
       await this.tasksService.createTask(name, userStoryId);
       return await this.projectService.getProjectById(projectId);
     } else {
-      throw new UnauthorizedException('user story not found');
+      throw new UnauthorizedException('User Story not found');
     }
   }
 
@@ -283,8 +283,15 @@ export class AuthService {
     field: string,
     value: string,
     userId: number,
-    taskId: number
+    taskId: number,
   ) {
-    return await this.tasksService.updateTask(field, value, taskId);
+    const projectId = await this.tasksService.updateTask(
+      field,
+      value,
+      userId,
+      taskId,
+    );
+    console.log('Project ID', projectId);
+    return await this.projectService.getProjectById(projectId);
   }
 }
