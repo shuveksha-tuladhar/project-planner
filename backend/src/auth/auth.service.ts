@@ -278,4 +278,13 @@ export class AuthService {
       throw new UnauthorizedException('user story not found');
     }
   }
+
+  async updateTask(
+    field: string,
+    value: string,
+    userId: number,
+    taskId: number
+  ) {
+    return await this.tasksService.updateTask(field, value, taskId);
+  }
 }
