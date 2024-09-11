@@ -1,38 +1,72 @@
-import { Box, Button, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  IconButton,
+  Input,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { Task } from "../UserStories/UserStoryDetailsAccordion";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { Project } from "../../Pages/Projects";
+import { CheckIcon, EditIcon } from "@chakra-ui/icons";
 
 type Props = {
-    task: Task; 
-    setProject: React.Dispatch<React.SetStateAction<Project>>;
-}
+  task: Task;
+  setProject: React.Dispatch<React.SetStateAction<Project>>;
+};
 
-const TaskBox = ({task, setProject} : Props) => {
-    const toast= useToast();
-    const navigate = useNavigate();
+const TaskBox = ({ task, setProject }: Props) => {
+  const toast = useToast();
+  const navigate = useNavigate();
 
-    const [taskStatus, setTaskStatus] = useState(task.status);
+  const [taskStatus, setTaskStatus] = useState(task.status);
 
-    console.log('TASK', task)
+  const [taskName, setTaskName] = useState(task.name);
+  const [updateName, setUpdateName] = useState(false);
 
-    const updateTask = (field: "status" | "name", value: string ) => {
+  const onChange = (e: any) => {
+    setTaskName(e.target.value);
+  };
 
-        const token = localStorage.getItem("token")
+  const onClickEdit = () => {
+    setUpdateName(!updateName);
+  };
 
+  console.log("TASK", task);
 
-    axios.post(
-      "http://localhost:4000/auth/update-task",
-      {
-        field, value, taskId: task.id
-      }, {
-        headers: { Authorization: `Bearer ${token}`}
-      })
+  const updateTask = (field: "status" | "name", value: string) => {
+    if (taskName === "") {
+        toast({
+          title: "Error",
+          description: `Please enter a valid task name!`,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        setTaskName(task.name);
+        return
+      }
+
+    const token = localStorage.getItem("token");
+
+    axios
+      .post(
+        "http://localhost:4000/auth/update-task",
+        {
+          field,
+          value,
+          taskId: task.id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       .then((response) => {
-        setProject(response.data)
-      
+        setProject(response.data);
+
         toast({
           title: "Success",
           description: `Your task ${field} has been updated.`,
@@ -40,9 +74,8 @@ const TaskBox = ({task, setProject} : Props) => {
           duration: 3000,
           isClosable: true,
         });
-
-
-      }).catch((error) => {
+      })
+      .catch((error) => {
         if (error.response.data.message === "Unauthorized") {
           toast({
             title: "Error",
@@ -62,24 +95,23 @@ const TaskBox = ({task, setProject} : Props) => {
             isClosable: true,
           });
         }
-
       });
-    };
+  };
 
   const toggleTaskStatus = () => {
     if (taskStatus === "To Do") {
-        setTaskStatus("In Progress");
-        updateTask("status", "In Progress")
-    } else if (taskStatus === "In Progress"){
-        setTaskStatus("Done!");
-        updateTask("status", "Done!")
+      setTaskStatus("In Progress");
+      updateTask("status", "In Progress");
+    } else if (taskStatus === "In Progress") {
+      setTaskStatus("Done!");
+      updateTask("status", "Done!");
     } else {
-        setTaskStatus("To Do");
-        updateTask("status", "To Do")
+      setTaskStatus("To Do");
+      updateTask("status", "To Do");
     }
-  }
+  };
 
-    return (
+  return (
     <Box
       display="flex"
       justifyContent="space-between"
@@ -88,9 +120,30 @@ const TaskBox = ({task, setProject} : Props) => {
       px={4}
       py={2}
       key={task.name}
+      gap={5}
     >
-      <Text p={4}>{task.name}</Text>
-      <Button onClick={toggleTaskStatus}>{taskStatus}</Button>
+        <Box flex={1}>
+      {updateName ? (
+        
+        <Input
+       
+          h="38px"
+          value={taskName}
+          onChange={onChange}
+          type="text"
+        />
+      ) : (
+        <Text >{task.name}</Text>
+      )}
+        </Box>
+      <IconButton
+        aria-label="Edit name"
+        icon={updateName ? <CheckIcon /> : <EditIcon />}
+        size="md"
+        onClick={updateName ? () => {updateTask ("name", taskName)} : onClickEdit}
+      />
+
+      <Button w="115 px" onClick={toggleTaskStatus}>{taskStatus}</Button>
     </Box>
   );
 };
