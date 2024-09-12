@@ -38,6 +38,7 @@ const UserDetailsRow = ({ field, value, username, setData }: Props) => {
           isClosable: true,
         });
       }
+      setValueState(value);
       return;
     } else {
       if (valueState === "") {
@@ -48,6 +49,10 @@ const UserDetailsRow = ({ field, value, username, setData }: Props) => {
           duration: 3000,
           isClosable: true,
         });
+        if (field !== 'password') {
+          setValueState(value);
+        }
+        return;
       }
     }
 
