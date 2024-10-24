@@ -49,7 +49,7 @@ const UserDetailsRow = ({ field, value, username, setData }: Props) => {
           duration: 3000,
           isClosable: true,
         });
-        if (field !== 'password') {
+        if (field !== 'Password') {
           setValueState(value);
         }
         return;
