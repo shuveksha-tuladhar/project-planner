@@ -4,7 +4,6 @@ import { Dispatch, SetStateAction, useState } from "react";
 import axios from "axios";
 import { isInvalidEmail } from "../../Pages/SignUp";
 import { Data } from "../../Pages/Profile";
-import { error } from "console";
 
 type Props = {
   field: string;

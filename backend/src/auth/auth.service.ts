@@ -269,8 +269,6 @@ export class AuthService {
       (userStory) => userStory.id === userStoryId,
     );
 
-    console.log('userStory', userStory);
-
     if (userStory.id) {
       await this.tasksService.createTask(name, userStoryId);
       return await this.projectService.getProjectById(projectId);
@@ -285,13 +283,12 @@ export class AuthService {
     userId: number,
     taskId: number,
   ) {
-    const projectId = await this.tasksService.updateTask(
+    const userStoryId = await this.tasksService.updateTask(
       field,
       value,
       userId,
       taskId,
     );
-    console.log('Project ID', projectId);
-    return await this.projectService.getProjectById(projectId);
+    return await this.userStoriesService.getUserStoryStatusById(userStoryId);
   }
 }

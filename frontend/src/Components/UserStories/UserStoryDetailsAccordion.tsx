@@ -59,7 +59,7 @@ const UserStoryDetailsAccordion = ({
           <Box p={4}>{description}</Box>
           {tasks.map((task) => {
             return (
-              <TaskBox task={task} setStoryStatus={setStoryStatus}/>
+              <TaskBox key={task.id} task={task} setStoryStatus={setStoryStatus}/>
             );
           })}
           <CreateTaskAccordion
