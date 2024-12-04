@@ -60,7 +60,7 @@ const UserDetailsRow = ({ field, value, username, setData }: Props) => {
 
     axios
       .post(
-        "http://localhost:4000/auth/change-account-detail",
+        `${process.env.REACT_APP_API_URL}/auth/change-account-detail`,
         {
           username,
           field: field.toLowerCase(),

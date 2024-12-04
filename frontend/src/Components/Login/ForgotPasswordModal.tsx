@@ -42,7 +42,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }: Props) => {
       onClose();
     } else {
       axios
-        .post("http://localhost:4000/auth/reset-password", {
+        .post(`${process.env.REACT_APP_API_URL}/auth/reset-password`, {
           email,
         })
         .then((response) => {

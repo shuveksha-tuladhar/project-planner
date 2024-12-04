@@ -36,7 +36,7 @@ const ResetPassword = () => {
         setSubmitSecondPassword(true);
 
         axios
-        .post("http://localhost:4000/auth/save-new-password", {
+        .post(`${process.env.REACT_APP_API_URL}/auth/save-new-password`, {
         newPassword: password,
         id,
         token

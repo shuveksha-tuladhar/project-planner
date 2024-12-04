@@ -41,7 +41,7 @@ const Profile = () => {
    const deleteAccount = () => {
         const token = localStorage.getItem("token")
         axios.post(
-            "http://localhost:4000/auth/delete-user", 
+            `${process.env.REACT_APP_API_URL}/auth/delete-user`, 
             {},
             {headers: {Authorization: `Bearer ${token}`} } 
         ).then ((response) => {

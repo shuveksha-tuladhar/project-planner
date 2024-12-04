@@ -114,7 +114,7 @@ const SignUp = () => {
       console.log(isErrorSecondPassword);
     } else {
       axios
-        .post("http://localhost:4000/auth/sign-up", {
+        .post(`${process.env.REACT_APP_API_URL}/auth/sign-up`, {
           name,
           email,
           username,
