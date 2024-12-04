@@ -11,7 +11,7 @@ const config = {
   username: `${process.env.DB_USERNAME}`,
   password: `${process.env.DB_PASSWORD}`,
   database: `${process.env.DB_NAME}`,
-  ssl: `${process.env.DB_USERNAME}` && {
+  ssl: `${process.env.DB_SSL}` && {
     key: `${process.env.DB_SSL_KEY ?? undefined}`,
     cert: `${process.env.DB_SSL_CERT ?? undefined}`,
     ca: `${process.env.DB_SSL_CA ?? undefined}`,
