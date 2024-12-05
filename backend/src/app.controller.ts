@@ -10,7 +10,7 @@ export class AppController {
     @Body('firstName') firstName: string,
     @Body('lastName') lastName: string,
   ) {
-    console.log(firstName, lastName)
+    console.log(firstName, lastName);
     return await this.appService.addName(firstName, lastName);
   }
 
@@ -18,5 +18,10 @@ export class AppController {
   async getNames() {
     console.log('HERE');
     return this.appService.getNames();
+  }
+
+  @Get('/test')
+  async getTestUrl() {
+    return { status: 200, message: 'Test successful' };
   }
 }
