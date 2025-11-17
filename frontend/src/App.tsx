@@ -1,9 +1,9 @@
 import * as React from "react";
 import { ChakraProvider, Box} from "@chakra-ui/react";
-import axios from "axios";
 import { useState } from "react";
 import { Outlet, useLoaderData } from "react-router-dom";
 import Header from "./Components/Header";
+import theme from "./theme";
 
 type Data = {
   name: string;
@@ -32,7 +32,7 @@ function App() {
   console.log("LoggedIn:", loggedIn)
   
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <Header loggedIn={loggedIn}/>
       <Outlet context={context}/>
       <Box > 
