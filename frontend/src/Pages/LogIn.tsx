@@ -41,13 +41,11 @@ const LogIn = () => {
 
   const onChangeUsername = (e: any) => {
     setSubmitClickedUsername(false);
-    console.log(e.target.value);
     setUsername(e.target.value);
   };
 
   const onChangePassword = (e: any) => {
     setSubmitClickedPassword(false);
-    console.log(e.target.value);
     setPassword(e.target.value);
   };
 
@@ -89,7 +87,6 @@ const LogIn = () => {
           });
         })
         .catch((error) => {
-          // console.log("Error:", error);
           setUsername("");
           setPassword("");
 
@@ -115,7 +112,6 @@ const LogIn = () => {
     <Box bg="gray.50" minH="100vh" py={20}>
       <Container maxW="md">
         <VStack spacing={8} align="stretch">
-          {/* Header */}
           <VStack spacing={2}>
             <Box
               bg="brand.500"
@@ -133,7 +129,6 @@ const LogIn = () => {
             </Text>
           </VStack>
 
-          {/* Login Form */}
           <Box
             bg="white"
             p={8}
@@ -206,7 +201,6 @@ const LogIn = () => {
             </VStack>
           </Box>
 
-          {/* Sign Up Link */}
           <Box
             bg="white"
             p={6}
