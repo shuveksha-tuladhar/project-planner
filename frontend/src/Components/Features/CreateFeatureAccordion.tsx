@@ -58,7 +58,7 @@ const CreateFeatureAccordion = ({features, setProject, projectId}: Props) => {
 
 
     axios.post(
-      "http://localhost:4000/auth/create-feature",
+      `${process.env.REACT_APP_API_URL}/auth/create-feature`,
       {
         name,
         description,

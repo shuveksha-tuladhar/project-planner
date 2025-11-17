@@ -55,7 +55,7 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
 
     //on response, update projects state with list of projects returned from API
     axios.post(
-      "http://localhost:4000/auth/create-project",
+      `${process.env.REACT_APP_API_URL}/auth/create-project`,
       {
         name,
         description, 

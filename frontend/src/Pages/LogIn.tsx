@@ -52,7 +52,7 @@ const LogIn = () => {
       console.log("ERRORS");
     } else {
       axios
-        .post("http://localhost:4000/auth/log-in", {
+        .post(`${process.env.REACT_APP_API_URL}/auth/log-in`, {
           username,
           password,
         })

@@ -29,7 +29,7 @@ const router = createBrowserRouter([
       if (token) {
         try {
           const response = await axios.get(
-            "http://localhost:4000/auth/profile",
+            `${process.env.REACT_APP_API_URL}/auth/profile`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           return response.data;
@@ -60,7 +60,7 @@ const router = createBrowserRouter([
           if (token) {
             try {
               const response = await axios.get(
-                "http://localhost:4000/auth/user-projects",
+                `${process.env.REACT_APP_API_URL}/auth/user-projects`,
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               return response.data;
@@ -101,7 +101,7 @@ const router = createBrowserRouter([
             if (token) {
               try {
                 const response = await axios.get(
-                  `http://localhost:4000/auth/project/${params.id}`,
+                  `${process.env.REACT_APP_API_URL}/auth/project/${params.id}`,
                   { headers: { Authorization: `Bearer ${token}` } }
                 );
                 
@@ -155,7 +155,7 @@ const router = createBrowserRouter([
           if (token) {
             try {
               const response = await axios.get(
-                "http://localhost:4000/auth/profile",
+                `${process.env.REACT_APP_API_URL}/auth/profile`,
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               return response.data;
