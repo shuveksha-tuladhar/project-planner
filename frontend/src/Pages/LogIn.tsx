@@ -8,12 +8,20 @@ import {
   Text,
   useDisclosure,
   useToast,
+  VStack,
+  Heading,
+  Container,
+  Link as ChakraLink,
+  Icon,
+  InputGroup,
+  InputLeftElement,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, Link } from "react-router-dom";
 import { Context } from "../App";
 import ForgotPasswordModal from "../Components/Login/ForgotPasswordModal";
+import { FiUser, FiLock, FiLogIn } from "react-icons/fi";
 
 const LogIn = () => {
   const navigate = useNavigate();
@@ -23,6 +31,7 @@ const LogIn = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [submitClickedUsername, setSubmitClickedUsername] = useState(false);
   const [submitClickedPassword, setSubmitClickedPassword] = useState(false);
@@ -51,6 +60,7 @@ const LogIn = () => {
     if (username === "" || password === "") {
       console.log("ERRORS");
     } else {
+      setIsLoading(true);
       axios
         .post(`${process.env.REACT_APP_API_URL}/auth/log-in`, {
           username,
@@ -71,8 +81,8 @@ const LogIn = () => {
           navigate("/projects");
 
           toast({
-            title: "Account created.",
-            description: `Welcome back, ${username}`,
+            title: "Welcome back!",
+            description: `Successfully logged in as ${username}`,
             status: "success",
             duration: 3000,
             isClosable: true,
@@ -87,58 +97,142 @@ const LogIn = () => {
           setSubmitClickedPassword(false);
 
           toast({
-            title: "Error",
+            title: "Login Failed",
             description:
-              " There was an error logging you into your account. Please try again",
+              "Invalid username or password. Please try again.",
             status: "error",
             duration: 3000,
             isClosable: true,
           });
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
 
-   return (
-    <Box>
-      <Text textAlign="center" mb={4} fontSize={20}>
-        Log into Your Account
-      </Text>
-      <Box
-        maxW="75%"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        margin="0 auto"
-        gap={4}
-      >
-        <FormControl isInvalid={isErrorUsername} isRequired>
-          <FormLabel>Username</FormLabel>
-          <Input type="text" value={username} onChange={onChangeUsername} />
-          {!isErrorUsername ? null : (
-            <FormErrorMessage>Username is required.</FormErrorMessage>
-          )}
-        </FormControl>
+  return (
+    <Box bg="gray.50" minH="100vh" py={20}>
+      <Container maxW="md">
+        <VStack spacing={8} align="stretch">
+          {/* Header */}
+          <VStack spacing={2}>
+            <Box
+              bg="brand.500"
+              p={4}
+              borderRadius="2xl"
+              boxShadow="lg"
+            >
+              <Icon as={FiLogIn} color="white" boxSize={8} />
+            </Box>
+            <Heading size="xl" textAlign="center" fontWeight="bold">
+              Welcome Back
+            </Heading>
+            <Text color="gray.600" textAlign="center" fontSize="lg">
+              Log in to your account to continue
+            </Text>
+          </VStack>
 
-        <FormControl isInvalid={isErrorPassword} isRequired>
-          <FormLabel>Password</FormLabel>
-          <Input type="password" value={password} onChange={onChangePassword} />
-          {!isErrorPassword ? null : (
-            <FormErrorMessage>Password is required.</FormErrorMessage>
-          )}
-        </FormControl>
+          {/* Login Form */}
+          <Box
+            bg="white"
+            p={8}
+            borderRadius="2xl"
+            boxShadow="xl"
+            border="1px"
+            borderColor="gray.200"
+          >
+            <VStack spacing={6}>
+              <FormControl isInvalid={isErrorUsername} isRequired>
+                <FormLabel fontWeight="semibold">Username</FormLabel>
+                <InputGroup>
+                  <InputLeftElement pointerEvents="none">
+                    <Icon as={FiUser} color="gray.400" />
+                  </InputLeftElement>
+                  <Input
+                    type="text"
+                    value={username}
+                    onChange={onChangeUsername}
+                    placeholder="Enter your username"
+                    size="lg"
+                  />
+                </InputGroup>
+                {isErrorUsername && (
+                  <FormErrorMessage>Username is required.</FormErrorMessage>
+                )}
+              </FormControl>
 
-        <Button w="100%" onClick={onSubmit}>
-          Submit
-        </Button>
-      </Box>
+              <FormControl isInvalid={isErrorPassword} isRequired>
+                <FormLabel fontWeight="semibold">Password</FormLabel>
+                <InputGroup>
+                  <InputLeftElement pointerEvents="none">
+                    <Icon as={FiLock} color="gray.400" />
+                  </InputLeftElement>
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={onChangePassword}
+                    placeholder="Enter your password"
+                    size="lg"
+                  />
+                </InputGroup>
+                {isErrorPassword && (
+                  <FormErrorMessage>Password is required.</FormErrorMessage>
+                )}
+              </FormControl>
 
-      <Box display="flex" justifyContent="center" gap={10} mt={10}>
-        <Text lineHeight="40px">Forgot Password?</Text>
-        <Button onClick={onOpen}>Reset Password</Button>
-        
-        <ForgotPasswordModal isOpen={isOpen} onClose={onClose}/>
+              <Button
+                w="100%"
+                size="lg"
+                colorScheme="brand"
+                onClick={onSubmit}
+                isLoading={isLoading}
+                loadingText="Logging in..."
+                leftIcon={<Icon as={FiLogIn} />}
+              >
+                Log In
+              </Button>
 
-      </Box>
+              <Box textAlign="center">
+                <ChakraLink
+                  color="brand.500"
+                  fontWeight="semibold"
+                  onClick={onOpen}
+                  _hover={{ textDecoration: "underline" }}
+                >
+                  Forgot Password?
+                </ChakraLink>
+              </Box>
+            </VStack>
+          </Box>
+
+          {/* Sign Up Link */}
+          <Box
+            bg="white"
+            p={6}
+            borderRadius="xl"
+            boxShadow="md"
+            border="1px"
+            borderColor="gray.200"
+            textAlign="center"
+          >
+            <Text color="gray.600">
+              Don't have an account?{" "}
+              <Link to="/sign-up">
+                <ChakraLink
+                  color="brand.500"
+                  fontWeight="bold"
+                  _hover={{ textDecoration: "underline" }}
+                >
+                  Sign Up
+                </ChakraLink>
+              </Link>
+            </Text>
+          </Box>
+        </VStack>
+
+        <ForgotPasswordModal isOpen={isOpen} onClose={onClose} />
+      </Container>
     </Box>
   );
 };
