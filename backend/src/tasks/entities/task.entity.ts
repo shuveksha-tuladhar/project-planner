@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { UserStory } from 'src/userStories/entities/userStory.entity';
 
 @Entity()
@@ -11,8 +11,7 @@ export class Task {
 
   @Column()
   name: string;
-  
-  @Column({default: "To Do"})
-  status: string;
 
-  }
+  @Column({ default: 'To Do' })
+  status: string;
+}

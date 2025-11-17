@@ -123,6 +123,18 @@ export class TaskDto {
   @IsNotEmpty()
   userStoryId: number;
 }
+
+export class UpdateTaskDto{
+  @IsNotEmpty()
+  field: string;
+
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+
+  @IsNotEmpty()
+  taskId: number;
+}
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -227,5 +239,17 @@ export class AuthController {
       taskDto.featureId,
       taskDto.userStoryId
     );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('update-task')
+  updateTask(@Body() updateTaskDto: UpdateTaskDto, @Request() req) {
+    // console.log(updateTaskDto, req.user.sub);
+       return this.authService.updateTask(
+      updateTaskDto.field,
+      updateTaskDto.value,
+      req.user.sub,
+      updateTaskDto.taskId
+     );
   }
 }

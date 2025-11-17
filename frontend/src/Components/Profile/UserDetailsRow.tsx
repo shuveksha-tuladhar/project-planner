@@ -4,7 +4,6 @@ import { Dispatch, SetStateAction, useState } from "react";
 import axios from "axios";
 import { isInvalidEmail } from "../../Pages/SignUp";
 import { Data } from "../../Pages/Profile";
-import { error } from "console";
 
 type Props = {
   field: string;
@@ -38,6 +37,7 @@ const UserDetailsRow = ({ field, value, username, setData }: Props) => {
           isClosable: true,
         });
       }
+      setValueState(value);
       return;
     } else {
       if (valueState === "") {
@@ -48,13 +48,14 @@ const UserDetailsRow = ({ field, value, username, setData }: Props) => {
           duration: 3000,
           isClosable: true,
         });
+        if (field !== 'Password') {
+          setValueState(value);
+        }
+        return;
       }
     }
 
     const token = localStorage.getItem("token");
-
-    // console.log("Token on check:", token)
-    // console.log("username", username)
 
     setUpdateField(!updateField);
 

@@ -1,7 +1,6 @@
 import { Avatar, Box, Button, IconButton, Text, useToast } from "@chakra-ui/react"
 import { useLoaderData, useNavigate, useOutletContext } from "react-router";
 import { Context } from "../App";
-import {EditIcon} from "@chakra-ui/icons";
 import UserDetailsRow from "../Components/Profile/UserDetailsRow";
 import { useState } from "react";
 import axios from "axios";
