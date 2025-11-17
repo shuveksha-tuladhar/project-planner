@@ -5,7 +5,6 @@ import {
   RouterProvider,
   createBrowserRouter,
   redirect,
-  useParams,
 } from "react-router-dom";
 
 import SignUp from "./Pages/SignUp";
