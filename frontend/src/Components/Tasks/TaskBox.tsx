@@ -34,8 +34,6 @@ const TaskBox = ({ task, setStoryStatus }: Props) => {
     setUpdateName(!updateName);
   };
 
-  console.log("TASK", task);
-
   const updateTask = (field: "status" | "name", value: string) => {
     if (taskName === "") {
       toast({
@@ -98,19 +96,17 @@ const TaskBox = ({ task, setStoryStatus }: Props) => {
       });
   };
 
-  const toggleTaskStatus = () => {
-    console.log('Task status:', taskStatus);
-    if (taskStatus === "To Do") {
-    //   setTaskStatus("In Progress");
-      updateTask("status", "In Progress");
-    } else if (taskStatus === "In Progress") {
-    //   setTaskStatus("Done!");
-      updateTask("status", "Done!");
-    } else {
-    //   setTaskStatus("To Do");
-      updateTask("status", "To Do");
-    }
-  };
+  const getNextStatus = (current: string): string => {
+  if (current === "To Do") return "In Progress";
+  if (current === "In Progress") return "Done!";
+  return "To Do";
+};
+
+const toggleTaskStatus = () => {
+  const nextStatus = getNextStatus(taskStatus);
+  updateTask("status", nextStatus);
+  setTaskStatus(nextStatus);
+};
 
   return (
     <Box
@@ -121,11 +117,16 @@ const TaskBox = ({ task, setStoryStatus }: Props) => {
       px={4}
       py={2}
       key={task.name}
-      gap={5}
+      gap={4}
     >
       <Box flex={1}>
         {updateName ? (
-          <Input h="38px" value={taskName} onChange={onChange} type="text" />
+          <Input
+            h="38px"
+            value={taskName}
+            onChange={onChange}
+            type="text"
+          />
         ) : (
           <Text>{task.name}</Text>
         )}
@@ -134,6 +135,7 @@ const TaskBox = ({ task, setStoryStatus }: Props) => {
         aria-label="Edit name"
         icon={updateName ? <CheckIcon /> : <EditIcon />}
         size="md"
+        isDisabled={updateName && (taskName.trim() === "" || taskName === task.name)}
         onClick={
           updateName
             ? () => {
@@ -143,7 +145,7 @@ const TaskBox = ({ task, setStoryStatus }: Props) => {
         }
       />
 
-      <Button w="115 px" onClick={toggleTaskStatus}>
+      <Button w="115px" onClick={toggleTaskStatus}>
         {taskStatus}
       </Button>
     </Box>

@@ -57,9 +57,6 @@ const UserDetailsRow = ({ field, value, username, setData }: Props) => {
 
     const token = localStorage.getItem("token");
 
-    // console.log("Token on check:", token)
-    // console.log("username", username)
-
     setUpdateField(!updateField);
 
     axios
