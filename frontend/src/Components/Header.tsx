@@ -1,11 +1,24 @@
-import { Box, Button, Heading, Image } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Heading,
+  Container,
+  HStack,
+  Icon,
+} from "@chakra-ui/react";
+import { Link, useLocation } from "react-router-dom";
+import { FiGrid, FiUser, FiLogIn, FiUserPlus } from "react-icons/fi";
 
 const pages = [
-  { name: "Log In", path: "/log-in", showWhenLoggedIn: false },
-  { name: "Sign Up", path: "/sign-up", showWhenLoggedIn: false },
-  { name: "Projects", path: "/projects", showWhenLoggedIn: true },
-  { name: "Account Details", path: "/profile", showWhenLoggedIn: true },
+  { name: "Log In", path: "/log-in", showWhenLoggedIn: false, icon: FiLogIn },
+  {
+    name: "Sign Up",
+    path: "/sign-up",
+    showWhenLoggedIn: false,
+    icon: FiUserPlus,
+  },
+  { name: "Projects", path: "/projects", showWhenLoggedIn: true, icon: FiGrid },
+  { name: "Profile", path: "/profile", showWhenLoggedIn: true, icon: FiUser },
 ];
 
 type Props = {
@@ -13,25 +26,70 @@ type Props = {
 };
 
 const Header = ({ loggedIn }: Props) => {
+  const location = useLocation();
+
   return (
-    <Box display="flex" border="1px solid" alignItems="center">
-      <Box display="flex" gap={4} alignItems="center">
-        <Image borderRadius="full" boxSize="100px" src="/logo.svg" alt="logo" />
-        <Heading fontSize={30}>Project Planner </Heading>
-      </Box>
-      <Box gap={4} display="flex" justifyContent="space-around" w="70%">
-        {pages.map((page) => {
-          if (loggedIn && page.showWhenLoggedIn || !loggedIn && !page.showWhenLoggedIn) {
-            return (
-              <Link to={page.path} key={page.name}>
-                <Button>{page.name}</Button>
-              </Link>
-            );
-          } else {
-          return  null;
-          }
-        })}
-      </Box>
+    <Box
+      bg="white"
+      boxShadow="sm"
+      borderBottom="1px"
+      borderColor="gray.200"
+      position="sticky"
+      top={0}
+      zIndex={1000}
+    >
+      <Container maxW="container.xl" py={4}>
+        <HStack justify="space-between" align="center">
+          <HStack spacing={4}>
+            <Box
+              bg="brand.500"
+              p={2}
+              borderRadius="lg"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Icon as={FiGrid} color="white" boxSize={6} />
+            </Box>
+            <Heading
+              fontSize={{ base: "xl", md: "2xl" }}
+              fontWeight="bold"
+              bgGradient="linear(to-r, brand.500, brand.600)"
+              bgClip="text"
+            >
+              Project Planner
+            </Heading>
+          </HStack>
+          <HStack spacing={3}>
+            {pages.map((page) => {
+              if (
+                (loggedIn && page.showWhenLoggedIn) ||
+                (!loggedIn && !page.showWhenLoggedIn)
+              ) {
+                const isActive = location.pathname === page.path;
+                return (
+                  <Link to={page.path} key={page.name}>
+                    <Button
+                      leftIcon={<Icon as={page.icon} />}
+                      variant={isActive ? "solid" : "ghost"}
+                      colorScheme={isActive ? "brand" : "gray"}
+                      size={{ base: "sm", md: "md" }}
+                      _hover={{
+                        transform: "translateY(-2px)",
+                        boxShadow: "md",
+                      }}
+                    >
+                      {page.name}
+                    </Button>
+                  </Link>
+                );
+              } else {
+                return null;
+              }
+            })}
+          </HStack>
+        </HStack>
+      </Container>
     </Box>
   );
 };

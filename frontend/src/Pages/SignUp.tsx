@@ -6,13 +6,20 @@ import {
   FormLabel,
   Input,
   Text,
-  Toast,
   useToast,
+  VStack,
+  Heading,
+  Container,
+  Link as ChakraLink,
+  Icon,
+  InputGroup,
+  InputLeftElement,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, Link } from "react-router-dom";
 import { Context } from "../App";
+import { FiUser, FiMail, FiLock, FiUserPlus } from "react-icons/fi";
 
 export const isInvalidEmail = (email: string) => {
   const emailFormat = /\S+@\S+\.\S+/;
@@ -86,16 +93,9 @@ const SignUp = () => {
     setSecondPassword(e.target.value);
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const onSubmit = () => {
-    // console.log("Name:", name);
-    // console.log("Email:", email);
-    // console.log("Username:", username);
-    // console.log("Password:", password);
-
-    // console.log("Password: ", password);
-    // console.log("Second Password: ", secondPassword);
-    // console.log(isInvalidpass2(password, secondPassword));
-
     setSubmitClickedName(true);
     setSubmitClickedEmail(true);
     setSubmitClickedUsername(true);
@@ -113,6 +113,7 @@ const SignUp = () => {
       console.log("ERRORS");
       console.log(isErrorSecondPassword);
     } else {
+      setIsLoading(true);
       axios
         .post(`${process.env.REACT_APP_API_URL}/auth/sign-up`, {
           name,
@@ -125,7 +126,6 @@ const SignUp = () => {
           context.toggleLoggedIn();
           localStorage.setItem("token", token);
         
-
           setName("");
           setEmail("");
           setUsername("");
@@ -140,8 +140,8 @@ const SignUp = () => {
           navigate("/projects");
 
           toast({
-            title: 'Account created.',
-            description: "We've created your account for you.",
+            title: 'Account created!',
+            description: `Welcome, ${username}! Your account has been created successfully.`,
             status: 'success',
             duration: 3000,
             isClosable: true,
@@ -160,80 +160,187 @@ const SignUp = () => {
           setSubmitClickedSecondPassword(false);
 
           toast({
-            title: 'Error',
-            description: " We were not able to create your account. Please try again",
+            title: 'Signup Failed',
+            description: "Unable to create your account. Please try again.",
             status: 'error',
             duration: 3000,
             isClosable: true,
           });
         })
-
-    };
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   };
 
   return (
-    <Box>
-      <Text textAlign="center" mb={4} fontSize={20}>
-        Create an Account
-      </Text>
-      <Box
-        maxW="75%"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        margin="0 auto"
-        gap={4}
-      >
-        <FormControl isInvalid={isErrorName} isRequired>
-          <FormLabel>Name</FormLabel>
-          <Input type="text" value={name} onChange={onChangeName} />
-          {!isErrorName ? null : (
-            <FormErrorMessage>Name is required.</FormErrorMessage>
-          )}
-        </FormControl>
+    <Box bg="gray.50" minH="100vh" py={20}>
+      <Container maxW="md">
+        <VStack spacing={8} align="stretch">
+          {/* Header */}
+          <VStack spacing={2}>
+            <Box
+              bg="brand.500"
+              p={4}
+              borderRadius="2xl"
+              boxShadow="lg"
+            >
+              <Icon as={FiUserPlus} color="white" boxSize={8} />
+            </Box>
+            <Heading size="xl" textAlign="center" fontWeight="bold">
+              Create Account
+            </Heading>
+            <Text color="gray.600" textAlign="center" fontSize="lg">
+              Sign up to start managing your projects
+            </Text>
+          </VStack>
 
-        <FormControl isInvalid={isErrorEmail} isRequired>
-          <FormLabel>Email Address</FormLabel>
-          <Input type="email" value={email} onChange={onChangeEmail} />
-          {!isErrorEmail ? null : (
-            <FormErrorMessage>
-              A valid email address is required.
-            </FormErrorMessage>
-          )}
-        </FormControl>
+          {/* Signup Form */}
+          <Box
+            bg="white"
+            p={8}
+            borderRadius="2xl"
+            boxShadow="xl"
+            border="1px"
+            borderColor="gray.200"
+          >
+            <VStack spacing={5}>
+              <FormControl isInvalid={isErrorName} isRequired>
+                <FormLabel fontWeight="semibold">Full Name</FormLabel>
+                <InputGroup>
+                  <InputLeftElement pointerEvents="none">
+                    <Icon as={FiUser} color="gray.400" />
+                  </InputLeftElement>
+                  <Input
+                    type="text"
+                    value={name}
+                    onChange={onChangeName}
+                    placeholder="Enter your name"
+                    size="lg"
+                  />
+                </InputGroup>
+                {isErrorName && (
+                  <FormErrorMessage>Name is required.</FormErrorMessage>
+                )}
+              </FormControl>
 
-        <FormControl isInvalid={isErrorUsername} isRequired>
-          <FormLabel>Username</FormLabel>
-          <Input type="text" value={username} onChange={onChangeUsername} />
-          {!isErrorUsername ? null : (
-            <FormErrorMessage>Username is required.</FormErrorMessage>
-          )}
-        </FormControl>
+              <FormControl isInvalid={isErrorEmail} isRequired>
+                <FormLabel fontWeight="semibold">Email Address</FormLabel>
+                <InputGroup>
+                  <InputLeftElement pointerEvents="none">
+                    <Icon as={FiMail} color="gray.400" />
+                  </InputLeftElement>
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={onChangeEmail}
+                    placeholder="Enter your email"
+                    size="lg"
+                  />
+                </InputGroup>
+                {isErrorEmail && (
+                  <FormErrorMessage>
+                    A valid email address is required.
+                  </FormErrorMessage>
+                )}
+              </FormControl>
 
-        <FormControl isInvalid={isErrorPassword} isRequired>
-          <FormLabel>Password</FormLabel>
-          <Input type="password" value={password} onChange={onChangePassword} />
-          {!isErrorPassword ? null : (
-            <FormErrorMessage>Password is required.</FormErrorMessage>
-          )}
-        </FormControl>
+              <FormControl isInvalid={isErrorUsername} isRequired>
+                <FormLabel fontWeight="semibold">Username</FormLabel>
+                <InputGroup>
+                  <InputLeftElement pointerEvents="none">
+                    <Icon as={FiUser} color="gray.400" />
+                  </InputLeftElement>
+                  <Input
+                    type="text"
+                    value={username}
+                    onChange={onChangeUsername}
+                    placeholder="Choose a username"
+                    size="lg"
+                  />
+                </InputGroup>
+                {isErrorUsername && (
+                  <FormErrorMessage>Username is required.</FormErrorMessage>
+                )}
+              </FormControl>
 
-        <FormControl isInvalid={isErrorSecondPassword} isRequired>
-          <FormLabel>Enter Password Again</FormLabel>
-          <Input
-            type="password"
-            value={secondPassword}
-            onChange={onChangeSecondPassword}
-          />
-          {!isErrorSecondPassword ? null : (
-            <FormErrorMessage>Passwords must match.</FormErrorMessage>
-          )}
-        </FormControl>
+              <FormControl isInvalid={isErrorPassword} isRequired>
+                <FormLabel fontWeight="semibold">Password</FormLabel>
+                <InputGroup>
+                  <InputLeftElement pointerEvents="none">
+                    <Icon as={FiLock} color="gray.400" />
+                  </InputLeftElement>
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={onChangePassword}
+                    placeholder="Create a password"
+                    size="lg"
+                  />
+                </InputGroup>
+                {isErrorPassword && (
+                  <FormErrorMessage>Password is required.</FormErrorMessage>
+                )}
+              </FormControl>
 
-        <Button w="100%" onClick={onSubmit}>
-          Submit
-        </Button>
-      </Box>
+              <FormControl isInvalid={isErrorSecondPassword} isRequired>
+                <FormLabel fontWeight="semibold">Confirm Password</FormLabel>
+                <InputGroup>
+                  <InputLeftElement pointerEvents="none">
+                    <Icon as={FiLock} color="gray.400" />
+                  </InputLeftElement>
+                  <Input
+                    type="password"
+                    value={secondPassword}
+                    onChange={onChangeSecondPassword}
+                    placeholder="Confirm your password"
+                    size="lg"
+                  />
+                </InputGroup>
+                {isErrorSecondPassword && (
+                  <FormErrorMessage>Passwords must match.</FormErrorMessage>
+                )}
+              </FormControl>
+
+              <Button
+                w="100%"
+                size="lg"
+                colorScheme="brand"
+                onClick={onSubmit}
+                isLoading={isLoading}
+                loadingText="Creating account..."
+                leftIcon={<Icon as={FiUserPlus} />}
+              >
+                Sign Up
+              </Button>
+            </VStack>
+          </Box>
+
+          {/* Login Link */}
+          <Box
+            bg="white"
+            p={6}
+            borderRadius="xl"
+            boxShadow="md"
+            border="1px"
+            borderColor="gray.200"
+            textAlign="center"
+          >
+            <Text color="gray.600">
+              Already have an account?{" "}
+              <Link to="/log-in">
+                <ChakraLink
+                  color="brand.500"
+                  fontWeight="bold"
+                  _hover={{ textDecoration: "underline" }}
+                >
+                  Log In
+                </ChakraLink>
+              </Link>
+            </Text>
+          </Box>
+        </VStack>
+      </Container>
     </Box>
   );
 };

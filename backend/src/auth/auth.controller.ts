@@ -124,7 +124,7 @@ export class TaskDto {
   userStoryId: number;
 }
 
-export class UpdateTaskDto{
+export class UpdateTaskDto {
   @IsNotEmpty()
   field: string;
 
@@ -184,22 +184,22 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('project/:id')
   getProject(@Param('id') id: number, @Request() req) {
-    console.log('params', id)
-   return this.authService.getProject(req.user.sub, id);
+    console.log('params', id);
+    return this.authService.getProject(req.user.sub, id);
   }
 
   @UseGuards(AuthGuard)
   @Get('user-projects')
   getUserProjects(@Request() req) {
     const user = this.authService.getProfileData(req.user.sub);
-    const projects = this.authService.getUserProjects(req.user.sub)
-   return this.authService.getUserProjects(req.user.sub);
+    const projects = this.authService.getUserProjects(req.user.sub);
+    return this.authService.getUserProjects(req.user.sub);
   }
 
   @UseGuards(AuthGuard)
   @Post('create-project')
   createProject(@Body() projectDto: ProjectDto, @Request() req) {
-      return this.authService.createProject(
+    return this.authService.createProject(
       projectDto.name,
       projectDto.description,
       req.user.sub,
@@ -220,7 +220,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('create-user-story')
   createUserStory(@Body() userStoryDto: UserStoryDto, @Request() req) {
-      return this.authService.createUserStory(
+    return this.authService.createUserStory(
       userStoryDto.name,
       userStoryDto.description,
       req.user.sub,
@@ -232,24 +232,23 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('create-task')
   createTask(@Body() taskDto: TaskDto, @Request() req) {
-       return this.authService.createTask(
+    return this.authService.createTask(
       taskDto.name,
       req.user.sub,
       taskDto.projectId,
       taskDto.featureId,
-      taskDto.userStoryId
+      taskDto.userStoryId,
     );
   }
 
   @UseGuards(AuthGuard)
   @Post('update-task')
   updateTask(@Body() updateTaskDto: UpdateTaskDto, @Request() req) {
-    // console.log(updateTaskDto, req.user.sub);
-       return this.authService.updateTask(
+    return this.authService.updateTask(
       updateTaskDto.field,
       updateTaskDto.value,
       req.user.sub,
-      updateTaskDto.taskId
-     );
+      updateTaskDto.taskId,
+    );
   }
 }

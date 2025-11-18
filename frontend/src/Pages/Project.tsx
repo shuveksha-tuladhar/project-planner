@@ -1,10 +1,21 @@
-import { Box, Text, useDisclosure } from "@chakra-ui/react";
-import { useLoaderData, useParams } from "react-router";
+import { 
+  Box, 
+  Text, 
+  Container, 
+  Heading, 
+  VStack, 
+  HStack, 
+  Badge,
+  Button,
+  Icon,
+} from "@chakra-ui/react";
+import { useLoaderData, useNavigate } from "react-router";
 import { Project as ProjectType } from "./Projects";
-import CreateFeatureAccordion from "../Components/Features/CreateFeatureAccordion";
+import CreateFeatureModal from "../Components/Features/CreateFeatureModal";
 import { useState } from "react";
-import FeatureModal, { UserStory } from "../Components/Features/FeatureModal";
+import { UserStory } from "../Components/Features/FeatureModal";
 import FeatureBox from "../Components/Features/FeatureBox";
+import { FiArrowLeft } from "react-icons/fi";
 
 export type Feature = {
   name: string;
@@ -19,65 +30,153 @@ export type Feature = {
 const columns = [
   {
     name: "To Do",
+    color: "gray",
+    bgColor: "gray.50",
   },
   {
     name: "In Progress",
+    color: "brand",
+    bgColor: "blue.50",
   },
   {
     name: "Done!",
+    color: "success",
+    bgColor: "green.50",
   },
 ];
 
 const Project = () => {
   const loaderData = useLoaderData() as ProjectType;
+  const navigate = useNavigate();
 
   const [project, setProject] = useState(loaderData);
 
-  console.log("Project", project)
-
   return (
-    <Box m={10}>
-      <Box mb={20}>
-        <Text mb={4} fontSize={20}>
-          {project.name}
-        </Text>
-        <Text>{project.description || "There is no project description."}</Text>
-      </Box>
-      <Box display="flex" gap={10}>
-        {columns.map((column) => {
-          return (
-            <Box border="1px" flex={1} height="100vh" key={column.name}>
-              <Text textAlign="center" fontSize={20} mt={2}>
-                {column.name}
-              </Text>
-              {project.features.map((feature) => {
-                // feature.status = "To Do";
-                if (column.name === feature.status) {
-                  return (
-                    <FeatureBox
-                      feature={feature}
-                      projectId={project.id}
-                      setProject={setProject}
-                      key={feature.id}
-                    />
-                  );
-                } else {
-                  return null;
-                }
-              })}
-              <Box p={4}>
-                {column.name === "To Do" && (
-                  <CreateFeatureAccordion
-                    features={project.features}
-                    setProject={setProject}
-                    projectId={project.id}
-                  />
-                )}
-              </Box>
-            </Box>
-          );
-        })}
-      </Box>
+    <Box bg="gray.50" minH="100vh" py={8}>
+      <Container maxW="container.xl">
+        <VStack spacing={6} align="stretch">
+          <VStack align="start" spacing={2}>
+            <Button
+              leftIcon={<Icon as={FiArrowLeft} />}
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/projects')}
+              mb={2}
+            >
+              Back to Projects
+            </Button>
+            <Heading size="xl" fontWeight="bold">
+              {project.name}
+            </Heading>
+            <Text color="gray.600" fontSize="md">
+              {project.description || "No project description"}
+            </Text>
+            <Badge
+              colorScheme="brand"
+              px={3}
+              py={1}
+              borderRadius="full"
+              fontSize="sm"
+            >
+              {project.features?.length || 0} Features
+            </Badge>
+          </VStack>
+
+          <HStack 
+            spacing={4} 
+            align="start" 
+            overflowX="auto"
+            pb={4}
+          >
+            {columns.map((column) => {
+              const columnFeatures = project.features.filter(
+                feature => feature.status === column.name
+              );
+
+              return (
+                <VStack
+                  key={column.name}
+                  flex="1"
+                  minW="320px"
+                  align="stretch"
+                  spacing={4}
+                >
+                  <Box
+                    bg="white"
+                    p={4}
+                    borderRadius="xl"
+                    boxShadow="sm"
+                    border="1px"
+                    borderColor="gray.200"
+                  >
+                    <HStack justify="space-between">
+                      <HStack>
+                        <Box
+                          w={3}
+                          h={3}
+                          borderRadius="full"
+                          bg={`${column.color}.500`}
+                        />
+                        <Heading size="md" fontWeight="bold">
+                          {column.name}
+                        </Heading>
+                      </HStack>
+                      <Badge
+                        colorScheme={column.color}
+                        borderRadius="full"
+                        px={3}
+                        py={1}
+                      >
+                        {columnFeatures.length}
+                      </Badge>
+                    </HStack>
+                  </Box>
+
+                  <VStack
+                    spacing={3}
+                    align="stretch"
+                    minH="400px"
+                    p={4}
+                    bg={column.bgColor}
+                    borderRadius="xl"
+                    border="2px dashed"
+                    borderColor={`${column.color}.200`}
+                  >
+                    {columnFeatures.map((feature) => (
+                      <FeatureBox
+                        key={feature.id}
+                        feature={feature}
+                        projectId={project.id}
+                        setProject={setProject}
+                      />
+                    ))}
+                    
+                    {columnFeatures.length === 0 && column.name !== "To Do" && (
+                      <Box
+                        p={8}
+                        textAlign="center"
+                        color="gray.400"
+                      >
+                        <Text fontSize="sm">
+                          No features yet
+                        </Text>
+                      </Box>
+                    )}
+
+                    {column.name === "To Do" && (
+                      <CreateFeatureModal
+                        features={project.features}
+                        setProject={setProject}
+                        projectId={project.id}
+                      />
+                    )}
+                  </VStack>
+                </VStack>
+              );
+            })}
+          </HStack>
+        </VStack>
+      </Container>
     </Box>
   );
 };

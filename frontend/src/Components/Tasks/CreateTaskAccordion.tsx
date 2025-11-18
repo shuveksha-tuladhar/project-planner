@@ -1,23 +1,17 @@
-import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-  Box,
   Button,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   Input,
   useToast,
+  HStack,
+  Icon,
 } from "@chakra-ui/react";
 import { useState } from "react";
-
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { Task } from "../UserStories/UserStoryDetailsAccordion";
 import { Project } from "../../Pages/Projects";
+import { FiPlus, FiX } from "react-icons/fi";
 
 type Props = {
   featureId: number;
@@ -30,16 +24,15 @@ const CreateTaskAccordion = ({
   projectId,
   featureId,
   userStoryId,
-  setProject
+  setProject,
 }: Props) => {
-
   const toast = useToast();
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
- 
   const [submitClickedName, setSubmitClickedName] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isErrorName = name === "" && submitClickedName;
 
@@ -48,11 +41,16 @@ const CreateTaskAccordion = ({
     setName(e.target.value);
   };
 
+  const handleCancel = () => {
+    setName("");
+    setSubmitClickedName(false);
+    setIsOpen(false);
+  };
+
   const onSubmit = () => {
     setSubmitClickedName(true);
     if (name !== "") {
-      setIsOpen(false);
-
+      setIsLoading(true);
       const token = localStorage.getItem("token");
 
       axios
@@ -62,31 +60,31 @@ const CreateTaskAccordion = ({
             name,
             projectId,
             featureId,
-            userStoryId
+            userStoryId,
           },
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         )
         .then((response) => {
-          setProject(response.data)
+          setProject(response.data);
           setName("");
           setSubmitClickedName(false);
+          setIsOpen(false);
 
           toast({
-            title: "Success",
-            description: "Your task has been created.",
+            title: "Task Created!",
+            description: "Your task has been added successfully.",
             status: "success",
             duration: 3000,
             isClosable: true,
           });
         })
         .catch((error) => {
-          console.log("Error", error)
-          //add error handling if error is token expired
-          if (error.response.data?.message === "Unauthorized") {
+          console.log("Error", error);
+          if (error.response?.data?.message === "Unauthorized") {
             toast({
-              title: "Error",
+              title: "Session Expired",
               description: "Your session has expired, please log in again.",
               status: "error",
               duration: 3000,
@@ -97,57 +95,88 @@ const CreateTaskAccordion = ({
             toast({
               title: "Error",
               description:
-                "There was an error creating your developer task. Please try again.",
+                "There was an error creating your task. Please try again.",
               status: "error",
               duration: 3000,
               isClosable: true,
             });
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
 
-  return (
-    <Accordion allowToggle index={isOpen ? 0 : 1}>
-      <AccordionItem borderTop="1px solid">
-        {({ isExpanded }) => (
-          <>
-            <h2>
-              <AccordionButton onClick={() => setIsOpen(!isOpen)} h="58 px">
-                {isExpanded ? (
-                  <MinusIcon fontSize="12px" />
-                ) : (
-                  <AddIcon fontSize="12px" />
-                )}
-                <Box as="span" flex="1" textAlign="left" m={3}>
-                  Add a task
-                </Box>
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4} border="1px solid">
-              <FormControl isInvalid={isErrorName} isRequired mb={4}>
-                <FormLabel>Task Name:</FormLabel>
-                <Input type="text" value={name} onChange={onChangeName} />
-                {!isErrorName ? null : (
-                  <FormErrorMessage>
-                    Developer Task Name is required.
-                  </FormErrorMessage>
-                )}
-              </FormControl>
+  if (!isOpen) {
+    return (
+      <Button
+        w="100%"
+        variant="ghost"
+        justifyContent="flex-start"
+        leftIcon={<Icon as={FiPlus} />}
+        onClick={() => setIsOpen(true)}
+        color="gray.600"
+        size="sm"
+        _hover={{
+          bg: "white",
+          color: "gray.800",
+        }}
+        fontWeight="normal"
+      >
+        Add a task
+      </Button>
+    );
+  }
 
-              <Button w="100%" onClick={onSubmit}>
-                Create Task
-              </Button>
-            </AccordionPanel>
-          </>
-        )}
-      </AccordionItem>
-    </Accordion>
+  return (
+    <FormControl isInvalid={isErrorName} isRequired>
+      <Input
+        type="text"
+        value={name}
+        onChange={onChangeName}
+        placeholder="Enter task name..."
+        size="sm"
+        autoFocus
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            onSubmit();
+          }
+          if (e.key === "Escape") {
+            handleCancel();
+          }
+        }}
+        bg="white"
+        borderColor="brand.300"
+        focusBorderColor="brand.500"
+      />
+      {isErrorName && (
+        <FormErrorMessage fontSize="xs">
+          Task name is required.
+        </FormErrorMessage>
+      )}
+      <HStack spacing={2} mt={2}>
+        <Button
+          size="sm"
+          colorScheme="brand"
+          onClick={onSubmit}
+          isLoading={isLoading}
+          loadingText="Creating..."
+          leftIcon={<Icon as={FiPlus} />}
+        >
+          Add Task
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={handleCancel}
+          leftIcon={<Icon as={FiX} />}
+        >
+          Cancel
+        </Button>
+      </HStack>
+    </FormControl>
   );
 };
 
 export default CreateTaskAccordion;
-function setTasks(data: any) {
-  throw new Error("Function not implemented.");
-}
-
