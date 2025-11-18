@@ -6,11 +6,7 @@ dotenvConfig();
 
 const config = {
   type: 'postgres',
-  host: `${process.env.DB_HOST}`,
-  port: `${process.env.DB_PORT}`,
-  username: `${process.env.DB_USERNAME}`,
-  password: `${process.env.DB_PASSWORD}`,
-  database: `${process.env.DB_NAME}`,
+  url: process.env.DB_URL,
   ssl: process.env.DB_SSL === 'true' && {
     key: process.env.DB_SSL_KEY ?? undefined,
     cert: process.env.DB_SSL_CERT ?? undefined,
