@@ -9,7 +9,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";

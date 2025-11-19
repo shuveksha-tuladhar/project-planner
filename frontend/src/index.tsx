@@ -15,6 +15,7 @@ import axios from "axios";
 import { createStandaloneToast } from "@chakra-ui/react";
 import ResetPassword from "./Pages/ResetPassword";
 import Project from "./Pages/Project";
+import Landing from "./Pages/Landing";
 
 const { ToastContainer, toast } = createStandaloneToast();
 
@@ -40,6 +41,18 @@ const router = createBrowserRouter([
       }
     },
     children: [
+      {
+        index: true,
+        element: <Landing />,
+        loader: async () => {
+          const token = localStorage.getItem("token");
+          if (token) {
+            // If logged in, redirect to projects
+            return redirect("/projects");
+          }
+          return null;
+        },
+      },
       {
         path: "/sign-up",
         element: <SignUp />,

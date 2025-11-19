@@ -33,7 +33,7 @@ function App() {
   
   return (
     <ChakraProvider theme={theme}>
-      <Header loggedIn={loggedIn}/>
+      <Header loggedIn={loggedIn} toggleLoggedIn={toggleLoggedIn}/>
       <Outlet context={context}/>
       <Box > 
         
