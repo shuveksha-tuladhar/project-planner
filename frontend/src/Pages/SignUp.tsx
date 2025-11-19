@@ -177,7 +177,6 @@ const SignUp = () => {
     <Box bg="gray.50" minH="100vh" py={20}>
       <Container maxW="md">
         <VStack spacing={8} align="stretch">
-          {/* Header */}
           <VStack spacing={2}>
             <Box
               bg="brand.500"
@@ -195,7 +194,6 @@ const SignUp = () => {
             </Text>
           </VStack>
 
-          {/* Signup Form */}
           <Box
             bg="white"
             p={8}
@@ -316,7 +314,6 @@ const SignUp = () => {
             </VStack>
           </Box>
 
-          {/* Login Link */}
           <Box
             bg="white"
             p={6}

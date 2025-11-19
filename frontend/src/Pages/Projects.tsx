@@ -69,7 +69,6 @@ const Projects = () => {
     <Box bg="gray.50" minH="100vh" py={8}>
       <Container maxW="container.xl">
         <VStack spacing={6} align="stretch">
-          {/* Header Section */}
           <HStack justify="space-between" align="center">
             <VStack align="start" spacing={1}>
               <Heading size="lg" fontWeight="bold">
@@ -90,7 +89,7 @@ const Projects = () => {
             </Button>
           </HStack>
 
-          {/* Create Project Accordion */}
+
           {isOpen && (
             <Box 
               bg="white" 
@@ -104,7 +103,6 @@ const Projects = () => {
             </Box>
           )}
 
-          {/* Projects Grid */}
           {projects.length === 0 ? (
             <Box 
               bg="white" 
