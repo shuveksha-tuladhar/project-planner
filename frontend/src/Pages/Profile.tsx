@@ -79,7 +79,6 @@ const Profile = () => {
         <Box bg="gray.50" minH="100vh" py={8}>
           <Container maxW="container.lg">
             <VStack spacing={8} align="stretch">
-              {/* Header */}
               <VStack spacing={3}>
                 <Heading size="xl" fontWeight="bold">
                   Account Details
@@ -89,7 +88,6 @@ const Profile = () => {
                 </Text>
               </VStack>
 
-              {/* Profile Card */}
               <Box
                 bg="white"
                 p={8}
@@ -119,7 +117,6 @@ const Profile = () => {
                 </VStack>
               </Box>
 
-              {/* Actions */}
               <HStack spacing={4} justify="center">
                 <Button
                   leftIcon={<Icon as={FiLogOut} />}

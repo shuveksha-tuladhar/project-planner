@@ -34,6 +34,7 @@ const router = createBrowserRouter([
           );
           return response.data;
         } catch (error) {
+          localStorage.removeItem("token");
           return {};
         }
       } else {
@@ -44,14 +45,6 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Landing />,
-        loader: async () => {
-          const token = localStorage.getItem("token");
-          if (token) {
-            // If logged in, redirect to projects
-            return redirect("/projects");
-          }
-          return null;
-        },
       },
       {
         path: "/sign-up",
@@ -86,6 +79,7 @@ const router = createBrowserRouter([
                 duration: 3000,
                 isClosable: true,
               });
+              localStorage.removeItem("token");
               return redirect("/log-in");
             }
           } else {
@@ -104,57 +98,56 @@ const router = createBrowserRouter([
         },
       },
       {
-          path: "/project/:id",
-          element: <Project/>,
-          loader: async ({params}) => {
-           
-             const token = localStorage.getItem("token");
-  
-            if (token) {
-              try {
-                const response = await axios.get(
-                  `${process.env.REACT_APP_API_URL}/auth/project/${params.id}`,
-                  { headers: { Authorization: `Bearer ${token}` } }
-                );
-                
-                if (response.data.length === 0){
-                  toast({
-                    title: "An error occurred.",
-                    description: "You do not have access to that project!.",
-                    status: "error",
-                    duration: 3000,
-                    isClosable: true,
-                  });
-                  return redirect("/projects");
-                }
+        path: "/project/:id",
+        element: <Project />,
+        loader: async ({ params }) => {
+          const token = localStorage.getItem("token");
 
-                return response.data;
-              } catch (error) {
-       
-                console.log("ERRORS", error);
+          if (token) {
+            try {
+              const response = await axios.get(
+                `${process.env.REACT_APP_API_URL}/auth/project/${params.id}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+
+              if (response.data.length === 0) {
                 toast({
                   title: "An error occurred.",
-                  description: "You must be signed in to view this page.",
+                  description: "You do not have access to that project!.",
                   status: "error",
                   duration: 3000,
                   isClosable: true,
                 });
-                return redirect("/log-in");
+                return redirect("/projects");
               }
-            } else {
-     
-              console.log("NO TOKEN");
-  
+
+              return response.data;
+            } catch (error) {
+              console.log("ERRORS", error);
               toast({
                 title: "An error occurred.",
-                description: "You must have an account to view this page.",
+                description: "You must be signed in to view this page.",
                 status: "error",
                 duration: 3000,
                 isClosable: true,
               });
-              return redirect("/sign-up");
+              return redirect("/log-in");
             }
-          },
+          } else {
+            console.log("NO TOKEN");
+
+            toast({
+              title: "An error occurred.",
+              description: "You must have an account to view this page.",
+              status: "error",
+              duration: 3000,
+              isClosable: true,
+            });
+            localStorage.removeItem("token");
+
+            return redirect("/sign-up");
+          }
+        },
       },
       {
         path: "/profile",
@@ -181,6 +174,8 @@ const router = createBrowserRouter([
                 duration: 3000,
                 isClosable: true,
               });
+              localStorage.removeItem("token");
+
               return redirect("/log-in");
             }
           } else {
@@ -200,8 +195,8 @@ const router = createBrowserRouter([
       },
       {
         path: "/reset-password/:token/:id",
-        element: <ResetPassword />
-      }
+        element: <ResetPassword />,
+      },
     ],
   },
 ]);
