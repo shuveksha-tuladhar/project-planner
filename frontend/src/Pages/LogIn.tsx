@@ -176,7 +176,7 @@ const LogIn = () => {
                 )}
               </FormControl>
 
-              <Button
+                <Button
                 w="100%"
                 size="lg"
                 colorScheme="brand"
@@ -184,9 +184,12 @@ const LogIn = () => {
                 isLoading={isLoading}
                 loadingText="Logging in..."
                 leftIcon={<Icon as={FiLogIn} />}
-              >
+                >
                 Log In
-              </Button>
+                </Button>
+                <Text fontSize="sm" color="gray.500" textAlign="center">
+                Demo login: <b>demo</b> / <b>demo123</b>
+                </Text>
 
               <Box textAlign="center">
                 <ChakraLink

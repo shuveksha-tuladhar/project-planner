@@ -5,9 +5,10 @@ import {
   Container,
   HStack,
   Icon,
+  useToast,
 } from "@chakra-ui/react";
-import { Link, useLocation } from "react-router-dom";
-import { FiGrid, FiUser, FiLogIn, FiUserPlus } from "react-icons/fi";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FiGrid, FiUser, FiLogIn, FiUserPlus, FiLogOut } from "react-icons/fi";
 
 const pages = [
   { name: "Log In", path: "/log-in", showWhenLoggedIn: false, icon: FiLogIn },
@@ -23,10 +24,28 @@ const pages = [
 
 type Props = {
   loggedIn: boolean;
+  toggleLoggedIn?: () => void;
 };
 
-const Header = ({ loggedIn }: Props) => {
+const Header = ({ loggedIn, toggleLoggedIn }: Props) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const handleLogoutClick = () => {
+    localStorage.removeItem("token");
+    if (toggleLoggedIn) {
+      toggleLoggedIn();
+    }
+    navigate("/log-in");
+    toast({
+      title: "Logged Out",
+      description: "You have been logged out successfully",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
 
   return (
     <Box
@@ -40,26 +59,28 @@ const Header = ({ loggedIn }: Props) => {
     >
       <Container maxW="container.xl" py={4}>
         <HStack justify="space-between" align="center">
-          <HStack spacing={4}>
-            <Box
-              bg="brand.500"
-              p={2}
-              borderRadius="lg"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Icon as={FiGrid} color="white" boxSize={6} />
-            </Box>
-            <Heading
-              fontSize={{ base: "xl", md: "2xl" }}
-              fontWeight="bold"
-              bgGradient="linear(to-r, brand.500, brand.600)"
-              bgClip="text"
-            >
-              Project Planner
-            </Heading>
-          </HStack>
+          <Link to="/">
+            <HStack spacing={4} cursor="pointer">
+              <Box
+                bg="brand.500"
+                p={2}
+                borderRadius="lg"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Icon as={FiGrid} color="white" boxSize={6} />
+              </Box>
+              <Heading
+                fontSize={{ base: "xl", md: "2xl" }}
+                fontWeight="bold"
+                bgGradient="linear(to-r, brand.500, brand.600)"
+                bgClip="text"
+              >
+                Project Planner
+              </Heading>
+            </HStack>
+          </Link>
           <HStack spacing={3}>
             {pages.map((page) => {
               if (
@@ -87,6 +108,20 @@ const Header = ({ loggedIn }: Props) => {
                 return null;
               }
             })}
+            {loggedIn && (
+              <Button
+                leftIcon={<Icon as={FiLogOut} />}
+                variant="ghost"
+                size={{ base: "sm", md: "md" }}
+                onClick={handleLogoutClick}
+                _hover={{
+                  transform: "translateY(-2px)",
+                  boxShadow: "md",
+                }}
+              >
+                Log Out
+              </Button>
+            )}
           </HStack>
         </HStack>
       </Container>
