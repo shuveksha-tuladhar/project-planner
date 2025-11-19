@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Data } from "./Profile";
-import CreateProjectAccordion from "../Components/Projects/CreateProjectAccordion";
+import CreateProjectModal from "../Components/Projects/CreateProjectModal";
 import { useState } from "react";
 import { Feature } from "./Project";
 import { FiFolder, FiCheckCircle, FiPlus } from "react-icons/fi";
@@ -89,19 +89,12 @@ const Projects = () => {
             </Button>
           </HStack>
 
-
-          {isOpen && (
-            <Box 
-              bg="white" 
-              p={6} 
-              borderRadius="xl" 
-              boxShadow="md"
-              border="1px"
-              borderColor="gray.200"
-            >
-              <CreateProjectAccordion projects={projects} setProjects={setProjects} />
-            </Box>
-          )}
+          <CreateProjectModal 
+            projects={projects} 
+            setProjects={setProjects}
+            isOpen={isOpen}
+            onClose={onToggle}
+          />
 
           {projects.length === 0 ? (
             <Box 

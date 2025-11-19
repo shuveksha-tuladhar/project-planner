@@ -12,6 +12,10 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import {
+  FiGrid,
+  FiTrello,
+  FiCheckCircle,
+  FiUsers,
   FiArrowRight,
   FiGithub,
   FiLinkedin,
@@ -43,6 +47,7 @@ const Landing = () => {
 
   return (
     <Box>
+      {/* Hero Section */}
       <Box
         bgGradient={bgGradient}
         color="white"
@@ -156,7 +161,9 @@ const Landing = () => {
       <Box bgGradient={bgGradient} color="white" py={{ base: 8, md: 8 }}>
         <Container maxW="container.xl">
           <VStack spacing={3} textAlign="center">
-            <Text fontSize="sm">Built by Shuveksha Tuladhar</Text>
+            <Text fontSize="sm">
+              Built by Shuveksha Tuladhar
+            </Text>
             <HStack spacing={4}>
               <Button
                 as="a"
@@ -194,7 +201,7 @@ const Landing = () => {
               >
                 Connect on LinkedIn
               </Button>
-              <Button
+            <Button
                 as="a"
                 href="https://shuveksha-tuladhar.github.io/"
                 target="_blank"
@@ -205,13 +212,13 @@ const Landing = () => {
                 color="white"
                 size="md"
                 _hover={{
-                  bg: "whiteAlpha.200",
-                  borderColor: "white",
-                  transform: "translateY(-2px)",
+                    bg: "whiteAlpha.200",
+                    borderColor: "white",
+                    transform: "translateY(-2px)",
                 }}
-              >
+            >
                 Portfolio Website
-              </Button>
+            </Button>
             </HStack>
           </VStack>
         </Container>
