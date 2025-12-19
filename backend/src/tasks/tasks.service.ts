@@ -45,4 +45,21 @@ export class TasksService {
       throw new BadRequestException('You cannot edit that task ');
     }
   }
+
+  async deleteTask(taskId: number, userId: number) {
+    const task = await this.tasksRepository.findOne({
+      where: {
+        id: taskId,
+        userStory: { feature: { project: { user: { id: userId } } } },
+      },
+      relations: ['userStory'],
+    });
+
+    if (!task) {
+      throw new BadRequestException('You cannot delete that task');
+    }
+
+    await this.tasksRepository.delete(taskId);
+    return { success: true };
+  }
 }

@@ -135,6 +135,43 @@ export class UpdateTaskDto {
   @IsNotEmpty()
   taskId: number;
 }
+
+export class UpdateUserStoryDto {
+  @IsNotEmpty()
+  field: string;
+
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+
+  @IsNotEmpty()
+  userStoryId: number;
+}
+
+export class UpdateFeatureDto {
+  @IsNotEmpty()
+  field: string;
+
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+
+  @IsNotEmpty()
+  featureId: number;
+}
+
+export class UpdateProjectDto {
+  @IsNotEmpty()
+  field: string;
+
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+
+  @IsNotEmpty()
+  projectId: number;
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -191,8 +228,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('user-projects')
   getUserProjects(@Request() req) {
-    const user = this.authService.getProfileData(req.user.sub);
-    const projects = this.authService.getUserProjects(req.user.sub);
     return this.authService.getUserProjects(req.user.sub);
   }
 
@@ -250,5 +285,65 @@ export class AuthController {
       req.user.sub,
       updateTaskDto.taskId,
     );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('delete-task')
+  deleteTask(@Body('taskId') taskId: number, @Request() req) {
+    return this.authService.deleteTask(req.user.sub, taskId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('update-user-story')
+  updateUserStory(
+    @Body() updateUserStoryDto: UpdateUserStoryDto,
+    @Request() req,
+  ) {
+    return this.authService.updateUserStory(
+      updateUserStoryDto.field,
+      updateUserStoryDto.value,
+      req.user.sub,
+      updateUserStoryDto.userStoryId,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('delete-user-story')
+  deleteUserStory(@Body('userStoryId') userStoryId: number, @Request() req) {
+    return this.authService.deleteUserStory(req.user.sub, userStoryId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('update-feature')
+  updateFeature(@Body() updateFeatureDto: UpdateFeatureDto, @Request() req) {
+    return this.authService.updateFeature(
+      updateFeatureDto.field,
+      updateFeatureDto.value,
+      req.user.sub,
+      updateFeatureDto.featureId,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('delete-feature')
+  deleteFeature(@Body('featureId') featureId: number, @Request() req) {
+    return this.authService.deleteFeature(req.user.sub, featureId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('update-project')
+  updateProject(@Body() updateProjectDto: UpdateProjectDto, @Request() req) {
+    return this.authService.updateProject(
+      updateProjectDto.field,
+      updateProjectDto.value,
+      req.user.sub,
+      updateProjectDto.projectId,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('delete-project')
+  deleteProject(@Body('projectId') projectId: number, @Request() req) {
+    return this.authService.deleteProject(req.user.sub, projectId);
   }
 }

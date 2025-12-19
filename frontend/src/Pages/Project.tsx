@@ -8,14 +8,27 @@ import {
   Badge,
   Button,
   Icon,
+  IconButton,
+  Input,
+  Textarea,
+  useToast,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Project as ProjectType } from "./Projects";
 import CreateFeatureModal from "../Components/Features/CreateFeatureModal";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { UserStory } from "../Components/Features/FeatureModal";
 import FeatureBox from "../Components/Features/FeatureBox";
 import { FiArrowLeft } from "react-icons/fi";
+import { CheckIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import axios from "axios";
 
 export type Feature = {
   name: string;
@@ -48,8 +61,131 @@ const columns = [
 const Project = () => {
   const loaderData = useLoaderData() as ProjectType;
   const navigate = useNavigate();
+  const toast = useToast();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
   const [project, setProject] = useState(loaderData);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [editedProjectName, setEditedProjectName] = useState(project.name);
+  const [editedProjectDescription, setEditedProjectDescription] = useState(
+    project.description || ""
+  );
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const updateProject = (field: "name" | "description", value: string) => {
+    if (field === "name" && value.trim() === "") {
+      toast({
+        title: "Error",
+        description: "Please enter a valid project name!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/auth/update-project`,
+        {
+          field: field,
+          value: value,
+          projectId: project.id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(() => {
+        if (field === "name") {
+          setIsEditingName(false);
+          setProject({ ...project, name: value });
+        } else {
+          setIsEditingDescription(false);
+          setProject({ ...project, description: value });
+        }
+        toast({
+          title: "Success",
+          description: "Project updated successfully!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        if (error.response?.data?.message === "Unauthorized") {
+          toast({
+            title: "Session Expired",
+            description: "Your session has expired, please log in again.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+          navigate("/log-in");
+        } else {
+          toast({
+            title: "Error",
+            description: "There was an error updating the project.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      });
+  };
+
+  const deleteProject = () => {
+    setIsDeleting(true);
+    const token = localStorage.getItem("token");
+
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/auth/delete-project`,
+        { projectId: project.id },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(() => {
+        toast({
+          title: "Success",
+          description: "Project deleted successfully!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        navigate("/projects");
+      })
+      .catch((error) => {
+        setIsDeleting(false);
+        if (error.response?.data?.message === "Unauthorized") {
+          toast({
+            title: "Session Expired",
+            description: "Your session has expired, please log in again.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+          navigate("/log-in");
+        } else {
+          toast({
+            title: "Error",
+            description: "There was an error deleting the project.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      });
+  };
 
   return (
     <Box bg="gray.50" minH="100vh" py={8}>
@@ -65,12 +201,76 @@ const Project = () => {
             >
               Back to Projects
             </Button>
-            <Heading size="xl" fontWeight="bold">
-              {project.name}
-            </Heading>
-            <Text color="gray.600" fontSize="md">
-              {project.description || "No project description"}
-            </Text>
+            <HStack spacing={3} width="100%">
+              {isEditingName ? (
+                <Input
+                  value={editedProjectName}
+                  onChange={(e) => setEditedProjectName(e.target.value)}
+                  size="lg"
+                  fontWeight="bold"
+                  flex={1}
+                  autoFocus
+                />
+              ) : (
+                <Heading size="xl" fontWeight="bold" flex={1}>
+                  {project.name}
+                </Heading>
+              )}
+              <HStack spacing={1}>
+                <IconButton
+                  aria-label="Edit project name"
+                  icon={isEditingName ? <CheckIcon /> : <EditIcon />}
+                  size="sm"
+                  colorScheme="blue"
+                  isDisabled={
+                    isEditingName &&
+                    (editedProjectName.trim() === "" ||
+                      editedProjectName === project.name)
+                  }
+                  onClick={() => {
+                    if (isEditingName) {
+                      updateProject("name", editedProjectName);
+                    } else {
+                      setIsEditingName(true);
+                    }
+                  }}
+                />
+                <IconButton
+                  aria-label="Delete project"
+                  icon={<DeleteIcon />}
+                  size="sm"
+                  colorScheme="blue"
+                  onClick={onDeleteOpen}
+                />
+              </HStack>
+            </HStack>
+            <HStack spacing={2} width="100%">
+              {isEditingDescription ? (
+                <Textarea
+                  value={editedProjectDescription}
+                  onChange={(e) => setEditedProjectDescription(e.target.value)}
+                  size="md"
+                  flex={1}
+                />
+              ) : (
+                <Text color="gray.600" fontSize="md" flex={1}>
+                  {project.description || "No project description"}
+                </Text>
+              )}
+              <IconButton
+                aria-label="Edit description"
+                icon={isEditingDescription ? <CheckIcon /> : <EditIcon />}
+                size="sm"
+                colorScheme="blue"
+                onClick={() => {
+                  if (isEditingDescription) {
+                    updateProject("description", editedProjectDescription);
+                  } else {
+                    setIsEditingDescription(true);
+                  }
+                }}
+              />
+            </HStack>
             <Badge
               colorScheme="brand"
               px={3}
@@ -177,6 +377,39 @@ const Project = () => {
           </HStack>
         </VStack>
       </Container>
+
+      <AlertDialog
+        isOpen={isDeleteOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onDeleteClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Project
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure you want to delete this {project.name}? This will also
+              delete all associated features, user stories, and tasks.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onDeleteClose}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={deleteProject}
+                ml={3}
+                isLoading={isDeleting}
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Box>
   );
 };

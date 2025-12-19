@@ -10,25 +10,24 @@ export class ProjectsService {
     private projectsRepository: Repository<Project>,
   ) {}
 
-  addStatusesToProject(project: Project){
+  addStatusesToProject(project: Project) {
     const featureCount = project.features.length;
     let completedFeatures = 0;
     let projectStarted = false;
 
-
     project.features.forEach((feature) => {
-      feature['userStoryCount'] = feature.userStories.length
+      feature['userStoryCount'] = feature.userStories.length;
       feature['completedUserStories'] = 0;
       let featureStarted = false;
 
       const userStories = feature.userStories;
       userStories.forEach((story) => {
-        story['taskCount'] = story.tasks.length
+        story['taskCount'] = story.tasks.length;
         const inProgressTasks = story.tasks.filter(
-          (task) => task.status === 'In Progress'
+          (task) => task.status === 'In Progress',
         ).length;
         const completedTasks = story.tasks.filter(
-          (task) => task.status === 'Done!'
+          (task) => task.status === 'Done!',
         ).length;
 
         story['completedTasks'] = completedTasks;
@@ -51,18 +50,16 @@ export class ProjectsService {
         feature['status'] = 'Done!';
         completedFeatures++;
       } else {
-        feature['status'] = 'In Progress'
+        feature['status'] = 'In Progress';
       }
     });
 
     if (!projectStarted) {
       project['status'] = 'To Do';
-    } else if (
-      featureCount === completedFeatures
-    ) {
+    } else if (featureCount === completedFeatures) {
       project['status'] = 'Done!';
     } else {
-      project['status'] = 'In Progress'
+      project['status'] = 'In Progress';
     }
     return project;
   }
@@ -90,7 +87,7 @@ export class ProjectsService {
 
     projects.forEach((project) => {
       this.addStatusesToProject(project);
-    })
+    });
 
     return projects;
   }
@@ -129,4 +126,51 @@ export class ProjectsService {
     return this.addStatusesToProject(project);
   }
 
+  async updateProject(
+    field: string,
+    value: string,
+    userId: number,
+    projectId: number,
+  ) {
+    const project = await this.projectsRepository.findOne({
+      where: { id: projectId },
+      relations: ['user'],
+    });
+
+    if (!project) {
+      throw new Error('Project not found');
+    }
+
+    if (project.user.id !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    project[field] = value;
+    await this.projectsRepository.save(project);
+
+    return project.id;
+  }
+
+  async deleteProject(projectId: number, userId: number) {
+    const project = await this.projectsRepository.findOne({
+      where: { id: projectId },
+      relations: [
+        'user',
+        'features',
+        'features.userStories',
+        'features.userStories.tasks',
+      ],
+    });
+
+    if (!project) {
+      throw new Error('Project not found');
+    }
+
+    if (project.user.id !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    await this.projectsRepository.remove(project);
+    return userId;
+  }
 }

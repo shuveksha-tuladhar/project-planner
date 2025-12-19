@@ -26,4 +26,52 @@ export class FeatureService {
     });
     return await this.getProjectFeatures(projectId);
   }
+
+  async updateFeature(
+    field: string,
+    value: string,
+    userId: number,
+    featureId: number,
+  ) {
+    const feature = await this.featuresRepository.findOne({
+      where: { id: featureId },
+      relations: ['project', 'project.user'],
+    });
+
+    if (!feature) {
+      throw new Error('Feature not found');
+    }
+
+    if (feature.project.user.id !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    feature[field] = value;
+    await this.featuresRepository.save(feature);
+
+    return feature.project.id;
+  }
+
+  async deleteFeature(featureId: number, userId: number) {
+    const feature = await this.featuresRepository.findOne({
+      where: { id: featureId },
+      relations: [
+        'project',
+        'project.user',
+        'userStories',
+        'userStories.tasks',
+      ],
+    });
+
+    if (!feature) {
+      throw new Error('Feature not found');
+    }
+
+    if (feature.project.user.id !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    await this.featuresRepository.remove(feature);
+    return feature.project.id;
+  }
 }

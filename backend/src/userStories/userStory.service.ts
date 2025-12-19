@@ -39,4 +39,43 @@ export class UserStoriesService {
     console.log('status', completedTasksLength, '/', taskCount);
     return `${completedTasksLength}/${taskCount}`;
   }
+
+  async updateUserStory(
+    field: string,
+    value: string,
+    userId: number,
+    userStoryId: number,
+  ) {
+    const userStoryToUpdate = await this.userStoriesRepository.findOne({
+      where: {
+        id: userStoryId,
+        feature: { project: { user: { id: userId } } },
+      },
+      relations: ['feature'],
+    });
+
+    if (userStoryToUpdate) {
+      userStoryToUpdate[field] = value;
+      await this.userStoriesRepository.save(userStoryToUpdate);
+      return userStoryToUpdate.feature.id;
+    } else {
+      throw new Error('You cannot edit that user story');
+    }
+  }
+
+  async deleteUserStory(userStoryId: number, userId: number) {
+    const userStory = await this.userStoriesRepository.findOne({
+      where: {
+        id: userStoryId,
+        feature: { project: { user: { id: userId } } },
+      },
+    });
+
+    if (!userStory) {
+      throw new Error('You cannot delete that user story');
+    }
+
+    await this.userStoriesRepository.delete(userStoryId);
+    return { success: true };
+  }
 }

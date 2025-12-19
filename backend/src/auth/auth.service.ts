@@ -6,22 +6,13 @@ import {
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import {
-  AccountDetailDto,
-  Email,
-  LogInDto,
-  NewPasswordDto,
-  ProjectDto,
-  SignUpDto,
-} from './auth.controller';
+import { AccountDetailDto, LogInDto, SignUpDto } from './auth.controller';
 import { User } from 'src/users/entities/user.entity';
 import { MailService } from 'src/mail/mail.service';
 import { ProjectsService } from 'src/projects/projects.service';
-import { ProjectsModule } from 'src/projects/projects.module';
 import { FeatureService } from 'src/features/features.service';
 import { UserStoriesService } from 'src/userStories/userStory.service';
 import { TasksService } from 'src/tasks/tasks.service';
-import { UserStory } from 'src/userStories/entities/userStory.entity';
 
 @Injectable()
 export class AuthService {
@@ -290,5 +281,56 @@ export class AuthService {
       taskId,
     );
     return await this.userStoriesService.getUserStoryStatusById(userStoryId);
+  }
+
+  async deleteTask(userId: number, taskId: number) {
+    return await this.tasksService.deleteTask(taskId, userId);
+  }
+
+  async updateUserStory(
+    field: string,
+    value: string,
+    userId: number,
+    userStoryId: number,
+  ) {
+    await this.userStoriesService.updateUserStory(
+      field,
+      value,
+      userId,
+      userStoryId,
+    );
+    return { success: true };
+  }
+
+  async deleteUserStory(userId: number, userStoryId: number) {
+    return await this.userStoriesService.deleteUserStory(userStoryId, userId);
+  }
+
+  async updateFeature(
+    field: string,
+    value: string,
+    userId: number,
+    featureId: number,
+  ) {
+    await this.featuresService.updateFeature(field, value, userId, featureId);
+    return { success: true };
+  }
+
+  async deleteFeature(userId: number, featureId: number) {
+    return await this.featuresService.deleteFeature(featureId, userId);
+  }
+
+  async updateProject(
+    field: string,
+    value: string,
+    userId: number,
+    projectId: number,
+  ) {
+    await this.projectService.updateProject(field, value, userId, projectId);
+    return { success: true };
+  }
+
+  async deleteProject(userId: number, projectId: number) {
+    return await this.projectService.deleteProject(projectId, userId);
   }
 }
